@@ -56,4 +56,4 @@ bin/*
 *.app
 
 *.DS_Store
-out_msbg_demo/
+out_msbg_demo/*
