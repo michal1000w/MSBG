@@ -18,18 +18,9 @@ namespace MSBG
 {
 
 #if 1
-const float FACE_AREA_CLAMP_ONE = 0.9995f,
-//	    FACE_AREA_CLAMP_ZERO = 0.01f;
-//	    	   
-            FACE_AREA_CLAMP_ZERO = 0.1f;
-//	    FACE_AREA_CLAMP_ZERO = 0.05f;
 #ifdef USE_CELL_VOLUME_FRACTIONS
 const float CELL_VOLUME_CLAMP_ZERO = 0.01f;
 #endif
-#else
-const float FACE_AREA_CLAMP_ONE = 0.9995f,
-	    FACE_AREA_CLAMP_ZERO = 0.001f;
-
 #endif
 
 typedef struct

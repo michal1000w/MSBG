@@ -28,8 +28,8 @@ namespace TST
 
 } // namespace TST
 
-static PSFloat *tmpBlkDataXBuf[MI_MAX_THREADS][3] = {0};
-static float *tmpBlkDataWBuf[MI_MAX_THREADS][6] = {0};
+static PSFloat *tmpBlkDataXBuf[MI_MAX_THREADS][3] = {{0}};
+static float *tmpBlkDataWBuf[MI_MAX_THREADS][6] = {{0}};
 static uint8_t *tmpBlkDataFBuf[MI_MAX_THREADS] = {0};
 static int tmpBlkErrorStatus[MI_MAX_THREADS] = {0};
 static int tmpBlkMaxLen,
@@ -2369,4 +2369,3 @@ void MultiresSparseGrid::relax(   int boundaryZoneOnly,
 }
 
 } // namespace MSBG
-

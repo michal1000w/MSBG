@@ -286,11 +286,20 @@ public:
     // Type cast operator to convert to __m256d used in intrinsics or Vec256de used in emulation
 #if INSTRSET >= 7  // AVX
     operator __m256d() const {
-#else
-    operator Vec256de() const {
-#endif
         return Vec4d(*this);
     }
+#else
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wclass-conversion"
+#endif
+    operator Vec256de() const {
+        return Vec4d(*this);
+    }
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+#endif
     // Member function to load from array (unaligned)
     Vec3d & load(double const * p) {
         Vec4d::load_partial(3, p);

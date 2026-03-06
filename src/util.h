@@ -189,8 +189,7 @@ class LargeContBuf
 
   private:
     void *_base;
-    size_t _initialSz,
-	   _actSz,
+    size_t _actSz,
 	   _pageSz,
       	   _reservedPages,
 	   _commitedPages;
@@ -1081,4 +1080,3 @@ int UtHTimerStop(UtHTimer *tm);
 MSBG_NAMESPACE_END
 
 #endif /* UTIL_H */
-

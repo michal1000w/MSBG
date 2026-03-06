@@ -1427,6 +1427,16 @@ Vec8f noise3d_simd8(
           oy1 = NOISE_Y * (iy0+1),
           oz1 = NOISE_Z * (iz0+1);
 
+    (void)dx1;
+    (void)dy1;
+    (void)dz1;
+    (void)ox0;
+    (void)oy0;
+    (void)oz0;
+    (void)ox1;
+    (void)oy1;
+    (void)oz1;
+
     return 0;
 }
 

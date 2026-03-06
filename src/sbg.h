@@ -1692,7 +1692,7 @@ class SparseGrid
     if(trcLevel>=0)
     {
       char chbuf[1024];
-      sprintf(chbuf, "SBG: '%s' (virt. %dx%dx%d@%d=%.0f) -> %.0f MB\n",
+      UtSprintf(chbuf, "SBG: '%s' (virt. %dx%dx%d@%d=%.0f) -> %.0f MB\n",
 	      _name, (int)_sx,(int)_sy,(int)_sz, (int)szElem, 
 	      szElem*_sx*_sy*_sz/((double)ONE_MB),
 	      szUsed/((double)ONE_MB));

@@ -5399,7 +5399,9 @@ double fabs (double);
 
 int MtSolveCubic(double *, double *);
 
+#ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
 #define SWAP2(X,Y)	{ h = X; X = Y; Y = h; }
 
 int MtSolveQuartic(double *a, double *x)
@@ -5553,7 +5555,7 @@ double MtSolveDiff( double    (* f)( double x, double *parms ),
   }
   if( i >= maxIter )
   {
-    sprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
+    UtSprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
     printf( "%s",msg );
   }
 
@@ -5588,7 +5590,7 @@ double MtSolve2( double    (* f)( double x, double *parms ),
 
   if( i >= maxIter )
   {
-    sprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
+    UtSprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
     printf( "%s", msg );
   }
 
@@ -5640,7 +5642,7 @@ int MtSolve( double    (* f)( double x, double *parms ),
   
   if( i >= maxIter )
   {
-    sprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
+    UtSprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
     printf( "%s", msg );
     return 1;
   }
@@ -5693,7 +5695,7 @@ int MtSolveBin( double    (* f)( double x, double *parms ),
   
 /*  if( i >= maxIter )
   {
-    sprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
+    UtSprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
     printf( msg );
     return 1;
   }*/
@@ -5742,7 +5744,7 @@ int MtSolveBinFl( float    (* f)( float x, float *parms ),
 #if 0  
   if( i >= maxIter )
   {
-    sprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
+    UtSprintf( msg, "MtSolve(): too many iterations. current error=%f",y);
     printf( msg );
     return 1;
   }
@@ -6311,14 +6313,14 @@ double MtMatInverse(double *matrix, int num_dims)
     l[k] = k;
     m[k] = k;
     biga = MT_MATEL(matrix,n, k,k);
-    abs_biga = abs(biga);
+    abs_biga = fabs(biga);
 
     /* Find the biggest element in the submatrix */
     for (i=k; i<num_dims; i++) {
       for (j = k, dptr1 = &MT_MATEL(matrix,n, i,j); j<num_dims; j++, dptr1++) {
-        if (abs(*dptr1) > abs_biga) {
+        if (fabs(*dptr1) > abs_biga) {
           biga = *dptr1;
-          abs_biga = abs(biga);
+          abs_biga = fabs(biga);
           l[k] = i;
           m[k] = j;
         }
@@ -7898,7 +7900,7 @@ int MtSmoothHist( MtHist *h, 	// histogram
     sum=0;
     for(i=0;i<2*r+1;i++)
     {
-      dst = fabs(i-r) / r;
+      dst = (double)abs(i-r) / (double)r;
       krn[i] = MtKernParzen(dst,sig);
       sum+=krn[i];
       printf("%f ",(float)krn[i]);
@@ -8858,5 +8860,4 @@ cmplx cmplx_pow(cmplx a, cmplx b)
 	cmplx_fixup(&r);
 	return(r);
 }
-
 

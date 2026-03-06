@@ -197,7 +197,7 @@ void *SparsePagedArray::allocElem( LongInt idxElem )
     if (lpvResult == NULL )
     {
       char chbuf[1000];
-      sprintf(chbuf,"SPA '%s': VirtualAlloc(%.0f,MEM_COMMIT) failed. errno=%d",
+      UtSprintf(chbuf,"SPA '%s': VirtualAlloc(%.0f,MEM_COMMIT) failed. errno=%d",
 	      _name,
 	      (double)sizeNeeded,
 	      (int)GetLastError());
@@ -234,7 +234,6 @@ size_t LargeContBuf::_totalCommitedSz=0;
 LargeContBuf::LargeContBuf( size_t initialSz, size_t maxSz, 
     			    int useLargePages ) :
   _base(NULL),
-  _initialSz(initialSz),
   _actSz(0),
   _pageSz(0),
   _reservedPages(0),
@@ -430,7 +429,7 @@ size_t LargeContBuf::extend( size_t newSz, int noErrorTrace )
     if( rcSys )
     {
       char chbuf[1000];
-      sprintf(chbuf,"VirtualAlloc(%.0f,MEM_COMMIT) failed. errno=%d",
+      UtSprintf(chbuf,"VirtualAlloc(%.0f,MEM_COMMIT) failed. errno=%d",
 	      (double)sizeNeeded,
 	      (int)GetLastError());
       if(noErrorTrace)
@@ -535,4 +534,3 @@ size_t UtLargeContbufTotalUsedSize( void )
 }
 
 MSBG_NAMESPACE_END
-

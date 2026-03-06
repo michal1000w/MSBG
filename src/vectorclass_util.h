@@ -11,6 +11,7 @@
 #define VECTORCLASS_UTIL_H  
 
 #include "vectorclass_util2.h"
+#include "format_compat.h"
 
 /////////////////////////////////////////////////////
 //  Misc. utility
@@ -47,46 +48,46 @@ static inline int horizontal_logical_or(const Vec4i& x) {
 #if 0
 inline char *vprint( char *chp, const Vec2fb v ) 
 { 
-  sprintf( chp, "%d,%d", v[0],v[1] );
+  UtSprintf( chp, "%d,%d", v[0],v[1] );
   return chp;
 }
 inline char *vprint( char *chp, const Vec2f v ) 
 { 
-  sprintf( chp, "%g,%g", v[0],v[1] );
+  UtSprintf( chp, "%g,%g", v[0],v[1] );
   return chp;
 }
 #endif
 
 inline char *vprint( char *chp, const Vec4fb v ) 
 { 
-  sprintf( chp, "%d,%d,%d,%d", v[0],v[1],v[2],v[3] );
+  UtSprintf( chp, "%d,%d,%d,%d", v[0],v[1],v[2],v[3] );
   return chp;
 }
 inline char *vprint( char *chp, const Vec4f v ) 
 { 
-  sprintf( chp, "%g,%g,%g,%g", v[0],v[1],v[2],v[3] );
+  UtSprintf( chp, "%g,%g,%g,%g", v[0],v[1],v[2],v[3] );
   return chp;
 }
 inline char *vprint( char *chp, const Vec4d v ) 
 { 
-  sprintf( chp, "%g,%g,%g,%g", v[0],v[1],v[2],v[3] );
+  UtSprintf( chp, "%g,%g,%g,%g", v[0],v[1],v[2],v[3] );
   return chp;
 }
 
 inline char *vprint( char *chp, const Vec8fb v ) 
 { 
-  sprintf( chp, "%d,%d,%d,%d,%d,%d,%d,%d", v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7] );
+  UtSprintf( chp, "%d,%d,%d,%d,%d,%d,%d,%d", v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7] );
   return chp;
 }
 inline char *vprint( char *chp, const Vec8f v ) 
 { 
-  sprintf( chp, "%g,%g,%g,%g,%g,%g,%g,%g", v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7] );
+  UtSprintf( chp, "%g,%g,%g,%g,%g,%g,%g,%g", v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7] );
   return chp;
 }
 
 inline char *vprint( char *chp, const Vec8ui v ) 
 { 
-  sprintf( chp, "%d,%d,%d,%d,%d,%d,%d,%d", v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7] );
+  UtSprintf( chp, "%d,%d,%d,%d,%d,%d,%d,%d", v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7] );
   return chp;
 }
 
@@ -1394,17 +1395,17 @@ static inline void vstoref_a( double * p, const Vec4d& v )
 
 static inline char *vecsprintf( char *buf, const Vec4d& v )
 {
-  sprintf(buf,"%g %g %g %g",v[0],v[1],v[2],v[3]);
+  UtSprintf(buf,"%g %g %g %g",v[0],v[1],v[2],v[3]);
   return buf;
 }
 static inline char *vecsprintf( char *buf, const Vec4f& v )
 {
-  sprintf(buf,"%g %g %g %g",v[0],v[1],v[2],v[3]);
+  UtSprintf(buf,"%g %g %g %g",v[0],v[1],v[2],v[3]);
   return buf;
 }
 static inline char *vecsprintf( char *buf, const Vec4ui& v )
 {
-  sprintf(buf,"%u %u %u %u",v[0],v[1],v[2],v[3]);
+  UtSprintf(buf,"%u %u %u %u",v[0],v[1],v[2],v[3]);
   return buf;
 }
 

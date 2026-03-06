@@ -243,16 +243,18 @@ int msbg_test_sparse(int testCase, const char *basePointsFile,
   //
   /////////////////////////////////////////////////////////////////////////////////
 
-  auto [ basePoints, basePointsBMin, basePointsBMax ] = 
-    readVerticesFromPLY( basePointsFile );
+  auto basePointData = readVerticesFromPLY( basePointsFile );
+  std::vector<Vec3Float>* basePoints = std::get<0>(basePointData);
+  Vec3Float basePointsBMin = std::get<1>(basePointData);
+  Vec3Float basePointsBMax = std::get<2>(basePointData);
 
   Vec3Float basePointsSpan;
   float basePointsSpanMax = -1e20;
   for(int k=0;k<3;k++) 
   {
     basePointsSpan[k] = basePointsBMax[k] - basePointsBMin[k];
-    UT_ASSERT0(std::isfinite(basePointsSpan[k] && 
-	       basePointsSpan[k] >= 0.f));
+    UT_ASSERT0(std::isfinite(basePointsSpan[k]) &&
+	       basePointsSpan[k] >= 0.f);
     basePointsSpanMax = std::max(basePointsSpanMax,basePointsSpan[k]);
   }
 

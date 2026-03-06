@@ -468,20 +468,20 @@ MultiresSparseGrid
 
       if( !(options & OPT_NO_CHAN_FCDIST) )
       {
-	sprintf(chbuf,"MSG:FCDIST:%d",l);
+	UtSprintf(chbuf,"MSG:FCDIST:%d",l);
 	sparseGrids->distFineCoarse = 
 	  SparseGrid<uint16_t>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
       }
 
-      sprintf(chbuf,"MSG:DENSD:%d",l);
+      UtSprintf(chbuf,"MSG:DENSD:%d",l);
       sparseGrids->densityDiff = 
 	SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
       //if(msg->USE_PHYSICAL_AIR_VELOCITY())
       {
-	sprintf(chbuf,"MSG:SOOTD:%d",l);
+	UtSprintf(chbuf,"MSG:SOOTD:%d",l);
 	sparseGrids->sootDiff = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -489,7 +489,7 @@ MultiresSparseGrid
 
       if(msg->_miscConf.heat_on)
       {
-	sprintf(chbuf,"MSG:HEATD:%d",l);
+	UtSprintf(chbuf,"MSG:HEATD:%d",l);
 	sparseGrids->heatDiff = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -497,7 +497,7 @@ MultiresSparseGrid
 
       //if(! optSingleLevel )
       {
-	sprintf(chbuf,"MSG:UIN16_2:%d",l);
+	UtSprintf(chbuf,"MSG:UIN16_2:%d",l);
 	sparseGrids->genUint16_2 = 
 	  SparseGrid<uint16_t>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -506,19 +506,19 @@ MultiresSparseGrid
       #ifdef RSURF_8_BIT
       if(optSingleLevel)
       {
-	sprintf(chbuf,"MSG:UINT8:%d",l);
+	UtSprintf(chbuf,"MSG:UINT8:%d",l);
 	sparseGrids->genUint8 = 
 	  SparseGrid<uint8_t>::create( chbuf, sx, sy, sz, blockSize,
 				       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	sprintf(chbuf,"MSG:UINT8_2:%d",l);
+	UtSprintf(chbuf,"MSG:UINT8_2:%d",l);
 	sparseGrids->genUint8_2 = 
 	  SparseGrid<uint8_t>::create( chbuf, sx, sy, sz, blockSize,
 				       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	sprintf(chbuf,"MSG:UINT8T:%d",l);
+	UtSprintf(chbuf,"MSG:UINT8T:%d",l);
 	sparseGrids->uint8Tmp = 
 	  SparseGrid<uint8_t>::create( chbuf, sx, sy, sz, blockSize,
 				       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	sprintf(chbuf,"MSG:UINT8T2:%d",l);
+	UtSprintf(chbuf,"MSG:UINT8T2:%d",l);
 	sparseGrids->uint8Tmp2 = 
 	  SparseGrid<uint8_t>::create( chbuf, sx, sy, sz, blockSize,
 				       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -527,13 +527,13 @@ MultiresSparseGrid
 
       if(! optSingleLevel )
       {
-	sprintf(chbuf,"MSG:FTMP3:%d",l);
+	UtSprintf(chbuf,"MSG:FTMP3:%d",l);
 	sparseGrids->floatTmp3 = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
 	{
-	  sprintf(chbuf,"MSG:VELAD:%d",l);
+	  UtSprintf(chbuf,"MSG:VELAD:%d",l);
 	  sparseGrids->velocityAirDiff = 
 	    SparseGrid<Vec3Float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -542,47 +542,47 @@ MultiresSparseGrid
 
       for(int lMg=0; lMg<=l; lMg++)
       {
-	sprintf(chbuf,"MSG:VEC1:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:VEC1:%d:%d",l,lMg);
 	sparseGrids->vec3_1[lMg] = 
 	  SparseGrid<Vec3Float>::create( chbuf, sx, sy, sz, blockSize,
 					sgMaxSizeMB, sgInitialSizeMB, 					
 					sgOptions | (optSingleLevel ? OPT_NO_DATA : 0)
 					);     
 
-	sprintf(chbuf,"MSG:P:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:P:%d:%d",l,lMg);
 	sparseGrids->pressure[lMg] = 
 	  SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 				       sgMaxSizeMB, sgInitialSizeMB, sgOptions );     
 
-	sprintf(chbuf,"MSG:SOBJID:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:SOBJID:%d:%d",l,lMg);
 	sparseGrids->genUint16[lMg] = 
 	  SparseGrid<uint16_t>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	sprintf(chbuf,"MSG:FLG:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:FLG:%d:%d",l,lMg);
 	sparseGrids->cellFlags[lMg] = 
 	  SparseGrid<CellFlags>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	sparseGrids->cellFlags[lMg]->setEmptyValue( CELL_EMPTY_VAL );
 
-	sprintf(chbuf,"MSG:FLGTMP:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:FLGTMP:%d:%d",l,lMg);
 	sparseGrids->cellFlagsTmp[lMg] = 
 	  SparseGrid<CellFlags>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	sparseGrids->cellFlagsTmp[lMg]->setEmptyValue( CELL_EMPTY_VAL );
 
-	sprintf(chbuf,"MSG:FLT2:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:FLT2:%d:%d",l,lMg);
 	sparseGrids->float2[lMg] = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	sprintf(chbuf,"MSG:FLT3:%d:%d",l,lMg);
+	UtSprintf(chbuf,"MSG:FLT3:%d:%d",l,lMg);
 	sparseGrids->float3[lMg] = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	if(!optSingleLevel)
 	{
-	  sprintf(chbuf,"MSG:FLT8:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:FLT8:%d:%d",l,lMg);
 	  sparseGrids->float8[lMg] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -590,7 +590,7 @@ MultiresSparseGrid
 
 	if( ! (options & OPT_SINGLE_CHANNEL_VEC ))
 	{
-	  sprintf(chbuf,"MSG:DENS:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:DENS:%d:%d",l,lMg);
 	  sparseGrids->float1[lMg] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -599,41 +599,41 @@ MultiresSparseGrid
 
       if( !optSingleChannel )
       {
-	sprintf(chbuf,"MSG:VELA:%d",l);
+	UtSprintf(chbuf,"MSG:VELA:%d",l);
 	sparseGrids->velocityAvg = 
 	  SparseGrid<Vec3Float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	sprintf(chbuf,"MSG:TURBEN:%d",l);
+	UtSprintf(chbuf,"MSG:TURBEN:%d",l);
 	sparseGrids->curvature = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	sprintf(chbuf,"MSG:HEAT:%d",l);
+	UtSprintf(chbuf,"MSG:HEAT:%d",l);
 	sparseGrids->heat = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	for(int lMg=0; lMg<=l; lMg++)
 	{
-	  sprintf(chbuf,"MSG:VEC4:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:VEC4:%d:%d",l,lMg);
 	  sparseGrids->vec3_4[lMg] = 
 	    SparseGrid<Vec3Float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	  sprintf(chbuf,"MSG:VEC2:%d",l);
+	  UtSprintf(chbuf,"MSG:VEC2:%d",l);
 	  sparseGrids->vec3_2[lMg] = 
 	    SparseGrid<Vec3Float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	  sprintf(chbuf,"MSG:VEC3:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:VEC3:%d:%d",l,lMg);
 	  sparseGrids->vec3_3[lMg] = 
 	    SparseGrid<Vec3Float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
-	  sprintf(chbuf,"MSG:FDENS:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:FDENS:%d:%d",l,lMg);
 	  sparseGrids->faceDensity[lMg] = 
 	    SparseGrid<FaceDensity>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
 	  for(int iDir=0;iDir<3;iDir++)
 	  {
-	    sprintf(chbuf,"MSG:FAREA_%d:%d:%d",iDir,l,lMg);
+	    UtSprintf(chbuf,"MSG:FAREA_%d:%d:%d",iDir,l,lMg);
 	    sparseGrids->faceArea[iDir][lMg] = 
 	      SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -641,22 +641,22 @@ MultiresSparseGrid
 	    sparseGrids->faceArea[iDir][lMg]->setFullValue( 1.0f );
 	  }
 
-	  sprintf(chbuf,"MSG:FLT6:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:FLT6:%d:%d",l,lMg);
 	  sparseGrids->float6[lMg] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:DIV:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:DIV:%d:%d",l,lMg);
 	  sparseGrids->divergence[lMg] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:MASSDENS:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:MASSDENS:%d:%d",l,lMg);
 	  sparseGrids->massDensity[lMg] = 
 	    SparseGrid<MassDensity>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	  #if 0 
-	  sprintf(chbuf,"MSG:CELLV:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:CELLV:%d:%d",l,lMg);
 	  sparseGrids->cellVolume[lMg] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -664,42 +664,42 @@ MultiresSparseGrid
 	  sparseGrids->cellVolume[lMg]->setFullValue( 1.0f );
           #endif
 
-	  sprintf(chbuf,"MSG:FLT4:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:FLT4:%d:%d",l,lMg);
 	  sparseGrids->float4[lMg] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:DIAG:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:DIAG:%d:%d",l,lMg);
 	  sparseGrids->diagonal[lMg] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
 	  #ifdef SOLVE_PRESSURE_DOUBLE
-	  sprintf(chbuf,"MSG:FTMPPS:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:FTMPPS:%d:%d",l,lMg);
 	  sparseGrids->floatTmpPS[lMg] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	  #endif
 
 
-	  sprintf(chbuf,"MSG:CGP:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:CGP:%d:%d",l,lMg);
 	  sparseGrids->cgP[lMg] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:CGQ:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:CGQ:%d:%d",l,lMg);
 	  sparseGrids->cgQ[lMg] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:POLD:%d:%d",l,lMg);
+	  UtSprintf(chbuf,"MSG:POLD:%d:%d",l,lMg);
 	  sparseGrids->pressureOld[lMg] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, blockSize,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
 	}
 
-	sprintf(chbuf,"MSG:DIVADJ:%d",l);
+	UtSprintf(chbuf,"MSG:DIVADJ:%d",l);
 	sparseGrids->divergenceAdj = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, blockSize,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -871,12 +871,12 @@ MultiresSparseGrid
 	MultiresSparseGrid::Level *lev = &msg->_sparseGrids[l];
 
 
-	sprintf(chbuf,"MSG:SOBJID:%d",l);
+	UtSprintf(chbuf,"MSG:SOBJID:%d",l);
 	lev->genUint16[0] = 
 	  SparseGrid<uint16_t>::create( chbuf, sx, sy, sz, 1,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	sprintf(chbuf,"MSG:FLG:%d",l);
+	UtSprintf(chbuf,"MSG:FLG:%d",l);
 	lev->cellFlags[0] = 
 	  SparseGrid<CellFlags>::create( chbuf, sx, sy, sz, 1,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -885,25 +885,25 @@ MultiresSparseGrid
 	SparseGrid<CellFlags> *sgFlags = lev->cellFlags[0];
 	USE(sgFlags);
 
-	sprintf(chbuf,"MSG:FLGTMP:%d",l);
+	UtSprintf(chbuf,"MSG:FLGTMP:%d",l);
 	lev->cellFlagsTmp[0] = 
 	  SparseGrid<CellFlags>::create( chbuf, sx, sy, sz, 1,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	lev->cellFlagsTmp[0]->setEmptyValue( CELL_EMPTY_VAL );
 
-	sprintf(chbuf,"MSG:FLT2:%d",l);
+	UtSprintf(chbuf,"MSG:FLT2:%d",l);
 	lev->float2[0] = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	sprintf(chbuf,"MSG:FLT3:%d",l);
+	UtSprintf(chbuf,"MSG:FLT3:%d",l);
 	lev->float3[0] = 
 	  SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
 	if( ! (options & OPT_SINGLE_CHANNEL_VEC ))
 	{
-	  sprintf(chbuf,"MSG:DENS:%d",l);
+	  UtSprintf(chbuf,"MSG:DENS:%d",l);
 	  lev->float1[0] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -911,17 +911,17 @@ MultiresSparseGrid
 
 	if( !optSingleChannel )
 	{  
-	  sprintf(chbuf,"MSG:FDENS:%d",l);
+	  UtSprintf(chbuf,"MSG:FDENS:%d",l);
 	  lev->faceDensity[0] = 
 	    SparseGrid<FaceDensity>::create( chbuf, sx, sy, sz, 1,
 					   sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:DIV:%d",l);
+	  UtSprintf(chbuf,"MSG:DIV:%d",l);
 	  lev->divergence[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	  {
-	    sprintf(chbuf,"MSG:FLT6:%d",l);
+	    UtSprintf(chbuf,"MSG:FLT6:%d",l);
 	    lev->float6[0] = 
 	      SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 					       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -929,7 +929,7 @@ MultiresSparseGrid
 
 	  for(int iDir=0;iDir<3;iDir++)
 	  {
-	    sprintf(chbuf,"MSG:FAREA_%d:%d",iDir,l);
+	    UtSprintf(chbuf,"MSG:FAREA_%d:%d",iDir,l);
 	    lev->faceArea[iDir][0] = 
 	      SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 					       sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -938,51 +938,51 @@ MultiresSparseGrid
 	  {
 	    for(int iDir=0;iDir<3;iDir++)
 	    {
-	      sprintf(chbuf,"MSG:FCOEFF_%d:%d",iDir,l);
+	      UtSprintf(chbuf,"MSG:FCOEFF_%d:%d",iDir,l);
 	      lev->faceCoeff[iDir][0] = 
 		SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 						 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 	    }
 	  }
 
-	  sprintf(chbuf,"MSG:P:%d",l);
+	  UtSprintf(chbuf,"MSG:P:%d",l);
 	  lev->pressure[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:FLT4:%d",l);
+	  UtSprintf(chbuf,"MSG:FLT4:%d",l);
 	  lev->float4[0] = 
 	    SparseGrid<float>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:MASSDENS:%d",l);
+	  UtSprintf(chbuf,"MSG:MASSDENS:%d",l);
 	  lev->massDensity[0] = 
 	    SparseGrid<MassDensity>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:DIAG:%d",l);
+	  UtSprintf(chbuf,"MSG:DIAG:%d",l);
 	  lev->diagonal[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
 	  #ifdef SOLVE_PRESSURE_DOUBLE
-	  sprintf(chbuf,"MSG:FTMPPS:%d",l);
+	  UtSprintf(chbuf,"MSG:FTMPPS:%d",l);
 	  lev->floatTmpPS[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					     sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
           #endif
 
-	  sprintf(chbuf,"MSG:CGP:%d",l);
+	  UtSprintf(chbuf,"MSG:CGP:%d",l);
 	  lev->cgP[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:CGQ:%d",l);
+	  UtSprintf(chbuf,"MSG:CGQ:%d",l);
 	  lev->cgQ[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
 
-	  sprintf(chbuf,"MSG:POLD:%d",l);
+	  UtSprintf(chbuf,"MSG:POLD:%d",l);
 	  lev->pressureOld[0] = 
 	    SparseGrid<PSFloat>::create( chbuf, sx, sy, sz, 1,
 					 sgMaxSizeMB, sgInitialSizeMB, sgOptions );      
@@ -2053,7 +2053,7 @@ void MultiresSparseGrid::setRefinementMap(
       _nActCellsBlkFluid = nActCellsBlkFluid;
 
       char chbuf[256];
-      sprintf(chbuf,"MSBG usage efficiency ('%s') = %g%% (%g%%)\n", _name,
+      UtSprintf(chbuf,"MSBG usage efficiency ('%s') = %g%% (%g%%)\n", _name,
 	    100.*(double)_nActCells[0]/(double)_sg0->nTotVirtVoxels(),
 	    100.*(double)_nActCellsBlkFluid/(double)_sg0->nTotVirtVoxels());
       if(_options & (OPT_SINGLE_CHANNEL_FLOAT | OPT_SINGLE_CHANNEL_VEC ))
@@ -2077,7 +2077,7 @@ void MultiresSparseGrid::setRefinementMap(
 	static int pnl[MSBG_MAX_LEVELS]={-2};
 	if(pnl[0]==-2) for(int i=0;i<ARRAY_LENGTH(pnl);i++) pnl[i]=-1;
 	char chbuf[200];
-	sprintf(chbuf,"Refinement level after setRefinementMap L=%d",levelMg);
+	UtSprintf(chbuf,"Refinement level after setRefinementMap L=%d",levelMg);
 	visualizeSlices( MiGetAuxPanel2(&pnl[levelMg],chbuf),
 	  CH_CELL_FLAGS,IP_NEAREST,NULL,0,levelMg,0,0,NULL,
 	  
@@ -2097,7 +2097,7 @@ void MultiresSparseGrid::setRefinementMap(
 	static int pnl[MSBG_MAX_LEVELS]={-2};
 	if(pnl[0]==-2) for(int i=0;i<ARRAY_LENGTH(pnl);i++) pnl[i]=-1;
 	char chbuf[200];
-	sprintf(chbuf,"Topology (cell flags) after setRefinementMap L=%d",levelMg);
+	UtSprintf(chbuf,"Topology (cell flags) after setRefinementMap L=%d",levelMg);
 	visualizeSlices( MiGetAuxPanel2(&pnl[levelMg],chbuf),
 	  CH_CELL_FLAGS,IP_NEAREST,NULL,0,levelMg,0,0,NULL,
 	  
@@ -2128,7 +2128,7 @@ void MultiresSparseGrid::setRefinementMap(
 	static int pnl[MSBG_MAX_LEVELS]={-2};
 	if(pnl[0]==-2) for(int i=0;i<ARRAY_LENGTH(pnl);i++) pnl[i]=-1;
 	char chbuf[200];
-	sprintf(chbuf,"Topology cell flags(II) after setRefinementMap L=%d",levelMg);
+	UtSprintf(chbuf,"Topology cell flags(II) after setRefinementMap L=%d",levelMg);
 	visualizeSlices( MiGetAuxPanel2(&pnl[levelMg],chbuf),
 	  CH_CELL_FLAGS,IP_NEAREST,NULL,VIS_OPT_TEST,levelMg);
       }
@@ -2140,7 +2140,7 @@ void MultiresSparseGrid::setRefinementMap(
 	static int pnl[MSBG_MAX_LEVELS]={-2};
 	if(pnl[0]==-2) for(int i=0;i<ARRAY_LENGTH(pnl);i++) pnl[i]=-1;
 	char chbuf[200];
-	sprintf(chbuf,"Bblocks after setRefinementMap L=%d  (R=uniform-empty,G=res-border,B=existing)",levelMg);
+	UtSprintf(chbuf,"Bblocks after setRefinementMap L=%d  (R=uniform-empty,G=res-border,B=existing)",levelMg);
 
 	visualizeBlockFlags( MiGetAuxPanel2(&pnl[levelMg], chbuf),	
 	    BLK_UNIFORM_EMPTY, BLK_COARSE_FINE|BLK_FINE_COARSE, BLK_EXISTS, levelMg );
@@ -3836,11 +3836,11 @@ double MultiresSparseGrid::compareChannel(
 	  char chbuf[100];
 
 	  if(dataVecA)
-	    sprintf(chbuf,"%g,%g,%g <-> %g,%g,%g",
+	    UtSprintf(chbuf,"%g,%g,%g <-> %g,%g,%g",
 		dataVecA[vid].x, dataVecA[vid].y, dataVecA[vid].z,
 		dataVecB[vid].x, dataVecB[vid].y, dataVecB[vid].z);
 	  else
-	    sprintf(chbuf,"%g <-> %g",valA,valB);
+	    UtSprintf(chbuf,"%g <-> %g",valA,valB);
 
 	  #if 0
 	  if((relErr>0.05 && fabs(valA)>1e-4) || 
@@ -5371,7 +5371,7 @@ void MultiresSparseGrid::getSumSlices(
       /*{
       static int pnl[3]={-1,-1,-1};
       char chbuf[200];
-      sprintf(chbuf,"sum_slices_%d",iNormDir);
+      UtSprintf(chbuf,"sum_slices_%d",iNormDir);
       double slicePos[3]={0.5,.5,.5};
       visualizeSlices( MiGetAuxPanel2(&pnl[iNormDir],chbuf),
 		  chanSum,
@@ -5637,7 +5637,7 @@ void MultiresSparseGrid::visualizeDenseField(
 			   );
 #if 0
     char path[UT_MAXPATHLEN+1];
-    sprintf(path, "visu.png");
+    UtSprintf(path, "visu.png");
     TRC(("saving image: '%s'\n",path));
     int rc = BmpSaveBitmapPNG( B, path, NULL, BMP_PNG);
     if(rc) 

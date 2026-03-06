@@ -68,6 +68,7 @@
 #endif
 
 #include <ctype.h>
+#include "format_compat.h"
 
 #ifdef __cplusplus
 extern "C" {

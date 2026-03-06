@@ -1260,7 +1260,7 @@ static int LogIErr( int isWarn, const char *format, va_list arg_ptr )
   }
 #endif
 
-  sprintf(buf2,"%s",isInfo ? "INFO:" : isWarn ? "WARNING:":"ERROR:");
+  UtSprintf(buf2,"%s",isInfo ? "INFO:" : isWarn ? "WARNING:":"ERROR:");
   rc = vsnprintf( buf, sizeof(buf)-1, format, arg_ptr );
   MiStripTrailingCRLF( buf, 0 );
 
@@ -1358,7 +1358,7 @@ void LogUnlock(void)
 int LogThrowError( const char*file, int line )
 {
   LogLock(); 
-  sprintf(LogSaveLoc,"  [%-36.36s %d]",file,line); 
+  UtSprintf(LogSaveLoc,"  [%-36.36s %d]",file,line); 
   LogErr("Assertion failed (fatal).");  
   LogUnlock();   
   exit(1);
@@ -1538,7 +1538,7 @@ int UtOpenLogFile(char *fname, int do_copy_old, int do_append)
   if(do_copy_old&&(!do_append))
   {
     UT_ASSERT(strlen(fname)+20<sizeof(fname_old));
-    sprintf(fname_old,"%s.old",fname);  
+    UtSprintf(fname_old,"%s.old",fname);  
     rc = UtCopyFile(fname,fname_old,0);
     USE(rc);
   }
@@ -1642,7 +1642,7 @@ int UtProgrIndDisplay( UtProgrInd *pgi, float percCompleted, char *chbuf0,
     else actSpeed = pgi->actSpeed;
     remMs = actSpeed > eps ? 
       (1.0-percCompleted) / actSpeed : 0;
-    sprintf(chbuf+len," %.0f%% remaining: %.0f sec",
+    UtSprintf(chbuf+len," %.0f%% remaining: %.0f sec",
 	(double)(100.*percCompleted), 
 	actSpeed < eps ? - 1: (remMs/1000.)); 
 
@@ -1669,14 +1669,14 @@ int UtProgrIndDisplay( UtProgrInd *pgi, float percCompleted, char *chbuf0,
     if(actSpeed > 0)
     {
       remMs = (1.0-percCompleted) / actSpeed;
-      sprintf(chbuf+len,"%.0f%% remaining: %d sec",
+      UtSprintf(chbuf+len,"%.0f%% remaining: %d sec",
 	  (float)(100.*percCompleted), (int)(remMs/1000.)); 
       pgi->actSpeed = actSpeed;
     }
   }
   else
   {
-    sprintf(chbuf+len,"%.0f%%",(float)(100.*percCompleted)); 
+    UtSprintf(chbuf+len,"%.0f%%",(float)(100.*percCompleted)); 
   }
   callback( chbuf, 0 );
   pgi->trig = TRUE;
@@ -2275,7 +2275,7 @@ int UtDiffFiles( char *fn1, char *fn2 )
   int 	        sysrc, rcThis = 0;  
   char		syscmd[2*UT_MAXPATHLEN+100];
 
-  sprintf(syscmd,"diff %s %s\n",fn1,fn2);
+  UtSprintf(syscmd,"diff %s %s\n",fn1,fn2);
   sysrc = system(syscmd);
   TRC(("system command: '%s' -> %d\n",syscmd,sysrc));
   if(sysrc!=0) raiseRc(MI_EDIFFER); // TODO: check other errors
@@ -2363,9 +2363,9 @@ int UtCopyFile( char *src, char *dst, int doFailIfExists )
   {
     char cmd[4096];
     #if 0
-    sprintf( cmd, "[ -e src ]; then cp -p %s \'%s\' \'%s\'; fi", doFailIfExists?"":"-f", src, dst);
+    UtSprintf( cmd, "[ -e src ]; then cp -p %s \'%s\' \'%s\'; fi", doFailIfExists?"":"-f", src, dst);
     #else
-    sprintf( cmd, "cp -p %s \'%s\' \'%s\'", doFailIfExists?"":"-f", src, dst);
+    UtSprintf( cmd, "cp -p %s \'%s\' \'%s\'", doFailIfExists?"":"-f", src, dst);
     #endif
 
     int sysrc = system( cmd );

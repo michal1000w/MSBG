@@ -57,7 +57,7 @@ void MultiresSparseGrid::saveVisualizationBitmap( BmpBitmap *B, char *title )
   }
 
   char chbuf[100];
-  sprintf(chbuf,"/frame_%06d",_totalSteps);
+  UtSprintf(chbuf,"/frame_%06d",_totalSteps);
   UtTimer tm;
   TIMER_START(&tm);
 

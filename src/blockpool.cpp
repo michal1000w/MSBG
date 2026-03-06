@@ -423,7 +423,7 @@ BlockPool *BlockPool::create( const char *name,
 
   // Allocate memory for object adm (zero initialized)
   {
-    sprintf(chbuf,"BPC#%s",name);
+    UtSprintf(chbuf,"BPC#%s",name);
     char chbuf2[256];
     ALLOCMEM_ALIGNED2_(p, BlockPool, sizeof(*p), CPU_CACHELINE_SZ,1,
       		     MM_Str2UserId(chbuf,chbuf2));

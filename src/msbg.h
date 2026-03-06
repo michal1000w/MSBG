@@ -2727,7 +2727,7 @@ class MultiresSparseGrid
     if(doNameSubdir) 
     {
       char tmp[UT_MAXPATHLEN+1];
-      sprintf(tmp,"/MSBG_%s/",getName());
+      UtSprintf(tmp,"/MSBG_%s/",getName());
       strcat(_visOutDir,tmp);
     }
   }

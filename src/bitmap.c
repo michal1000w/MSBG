@@ -4044,7 +4044,7 @@ int BmpDiffBitmaps( BmpBitmap *b1, BmpBitmap *b2, int channel,
     {
       BMP_PP_GETPIXEL( pp1, c, cr1, cg1, cb1 );
       BMP_PP_GETPIXEL( pp2, c, cr2, cg2, cb2 );
-      d = fabs( cr1-cr2 ) + fabs( cg1-cg2 ) + fabs( cb1-cb2 );
+      d = (float)(abs(cr1-cr2) + abs(cg1-cg2) + abs(cb1-cb2));
       MT_STAT_UPDATE( errStat, d );
     }
   }
@@ -4321,7 +4321,7 @@ BmpBitmap *BmpGradientSobelXYM( BmpBitmap *bmp, BmpRectangle *roi,
     TRCERRR(("invalid radius\n"),MI_ENOTIMPL);
   }
 
-  for(wsum=0,k=0;k<r*r;k++) wsum+=fabs(ppmX0[k]);
+  for(wsum=0,k=0;k<r*r;k++) wsum += abs(ppmX0[k]);
 
   MT_STAT_INIT(&statX);
   MT_STAT_INIT(&statY);
@@ -6007,7 +6007,7 @@ int BmpCorrectVertLumiBands(
   TRC1(("smoothing delay = %d\n",d));
   for(k=0;k<d;k++)
   {
-    mask[k] = MtGauss( 4*fabs(k-d/2)/(float)d );
+    mask[k] = MtGauss( 4*(float)abs(k-d/2)/(float)d );
     printf("%f ",mask[k]);
   }
   printf("\n");
@@ -7138,7 +7138,7 @@ int BmpTestDetailGainFunc(int n_iter, BmpBitmap **pB)
 
     {
       double x_min=-xmax,x_span=2*xmax,
-	     f_min=-20,f_span=2*abs(f_min);
+	     f_min=-20,f_span=2*fabs(f_min);
       int ix=B->sx*(x-x_min)/x_span,
 	  iy=B->sy*(1-(f-f_min)/f_span),
 	  iy0=B->sy*(1-(f0-f_min)/f_span),
@@ -8490,4 +8490,3 @@ rcCatch:
 }
 
 MSBG_NAMESPACE_END
-

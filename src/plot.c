@@ -222,7 +222,7 @@ int PlPlotAxes( PlPlot *p, int flags, double xSpace, double ySpace )
        GWline( px1, py1-dpy, px1, py2+dpy );
        if( flags & PL_TEXT_X )
        {
-         sprintf( str, "%5.5g", (double)x ); 
+         UtSprintf( str, "%5.5g", (double)x ); 
          if( mod % 2 == 0 )
          {
            GWputtxtl( px1-8, py1-8, str );
@@ -241,7 +241,7 @@ int PlPlotAxes( PlPlot *p, int flags, double xSpace, double ySpace )
        GWline( px1+dpx, py1, px2-dpx, py1 );
        if( flags & PL_TEXT_Y )
        {
-         sprintf( str, "%5.5g", (double)y ); 
+         UtSprintf( str, "%5.5g", (double)y ); 
          GWputtxtl( px1, py1, str );
        }
   }

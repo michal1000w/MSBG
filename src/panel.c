@@ -255,7 +255,7 @@ static void PnlVisualize3DFieldSlices1(
 
   {
     MtStat *s=&statXY;
-    sprintf(chbuf,"XY,%.1f: %g - %g",z0,s->min,s->max);
+    UtSprintf(chbuf,"XY,%.1f: %g - %g",z0,s->min,s->max);
     GWsettxtl(60,1.0,1,GWkrgb(255,255,255),GWkrgb(0,0,0),(char*)""); 
 #ifdef TEXTPOS_LOWER
     PnlBmpCoordsInv2(pnl, 0,sy-1, &wx0,&wy0);
@@ -267,7 +267,7 @@ static void PnlVisualize3DFieldSlices1(
 
   {
     MtStat *s=&statZY;
-    sprintf(chbuf,"ZY,%.1f: %g - %g",x0,s->min,s->max);
+    UtSprintf(chbuf,"ZY,%.1f: %g - %g",x0,s->min,s->max);
     GWsettxtl(60,1.0,1,GWkrgb(255,255,255),GWkrgb(0,0,0),(char*)""); 
 #ifdef TEXTPOS_LOWER
     PnlBmpCoordsInv2(pnl, sx-1, sy-1, &wx0,&wy0);
@@ -279,7 +279,7 @@ static void PnlVisualize3DFieldSlices1(
 
   {
     MtStat *s=&statZY;
-    sprintf(chbuf,"XZ,%.1f,Z: %g - %g",y0,s->min,s->max);
+    UtSprintf(chbuf,"XZ,%.1f,Z: %g - %g",y0,s->min,s->max);
     GWsettxtl(60,1.0,1,GWkrgb(255,255,255),GWkrgb(0,0,0),(char*)""); 
 #ifdef TEXTPOS_LOWER
     PnlBmpCoordsInv2(pnl, 0,sy+sz-1, &wx0,&wy0);
@@ -291,7 +291,7 @@ static void PnlVisualize3DFieldSlices1(
 
   if(gstat)
   {
-    sprintf(chbuf,"Global: %g - %g (%g %g)",
+    UtSprintf(chbuf,"Global: %g - %g (%g %g)",
 	gstat->min,gstat->max,gstat->avg,gstat->var);
     GWsettxtl(60,1.0,1,GWkrgb(255,255,255),GWkrgb(0,0,0),(char*)""); 
     PnlBmpCoordsInv2(pnl, sx-1,sy+sz-1, &wx0,&wy0);
@@ -533,7 +533,7 @@ void PnlVisualize3DFieldSlices(
 	switch(idir)
 	{
 	  case 0: // X - ZY
-	    s=statZY[k]; sprintf(chbuf,"ZY,%.1f: %g - %g",x0,s->min,s->max);
+	    s=statZY[k]; UtSprintf(chbuf,"ZY,%.1f: %g - %g",x0,s->min,s->max);
 	    xb = k*(sz+db);
 #ifdef TEXTPOS_LOWER
 	    yb = B->sy-1;
@@ -542,7 +542,7 @@ void PnlVisualize3DFieldSlices(
 #endif
 	    break;
 	  case 1: // Y - XZ
-	    s=statXZ[k]; sprintf(chbuf,"XZ,%.1f: %g - %g",y0,s->min,s->max);
+	    s=statXZ[k]; UtSprintf(chbuf,"XZ,%.1f: %g - %g",y0,s->min,s->max);
 	    xb = k*(sx+db);
 #ifdef TEXTPOS_LOWER
 	    yb = sz-1;
@@ -551,7 +551,7 @@ void PnlVisualize3DFieldSlices(
 #endif
 	    break;
 	  case 2: // Z - XY
-	    s=statXY[k]; sprintf(chbuf,"XY,%.1f: %g - %g",z0,s->min,s->max);
+	    s=statXY[k]; UtSprintf(chbuf,"XY,%.1f: %g - %g",z0,s->min,s->max);
 	    xb = k*(sx+db);;
 #ifdef TEXTPOS_LOWER
 	    yb = sz+sy-1;
@@ -577,7 +577,7 @@ void PnlVisualize3DFieldSlices(
       int k;
       for(k=0;k<nChan;k++)
       {
-	sprintf(chbuf,"Global: %g - %g (%g %g)",
+	UtSprintf(chbuf,"Global: %g - %g (%g %g)",
 	    gstat[k].min,gstat[k].max,gstat[k].avg,gstat[k].var);
 	GWsettxtl(60,1.0,1,GWkrgb(255,255,255),GWkrgb(0,0,0),(char*)""); 
 	PnlBmpCoordsInv2(pnl, nChan*(sx+db)-1,db+7*k, &wx0,&wy0);
@@ -1044,7 +1044,7 @@ static int PnlIDisplayBmp( PnlPanel *pnl, BmpBitmap *bmp0, int force )
   rc = GWputbmp(bmp->GWnr, 0, 0, 1 );
 
   TRC3(("PnlDisplayBmp pnl=%d bmp='%s'\n",
-	pnl->id,bmp->name?bmp->name:"-"));
+	pnl->id,bmp->name[0]?bmp->name:"-"));
 rcCatch:  
   return rcThis;
 }
@@ -1559,7 +1559,7 @@ PnlPanel *MiGetAuxPanel2(int *pi, const char *title)
   {
     if(!title)
     {
-      sprintf(chbuf,"AUX%d\n",i);
+      UtSprintf(chbuf,"AUX%d\n",i);
       title=chbuf;
     }
     pnl = PnlCreate((char*)title);
@@ -1592,4 +1592,3 @@ PnlPanel *MiGetAuxPanel(int *pi)
 }
 
 MSBG_NAMESPACE_END
-

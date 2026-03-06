@@ -32,10 +32,6 @@
 int thrMaxAllowedParallelism,
     thrIsRunningParallel;
 
-static LONG volatile thrIdxTaskNext=0,
-     	             thrNumTasks,
-		     thrNumTasks0;
-
 
 
 #define THR_CHUNK_SIZE 10

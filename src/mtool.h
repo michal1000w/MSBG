@@ -715,11 +715,11 @@ MtStat;
 } 
 
 #define MT_STAT_SPRINT(str,st) \
-    (sprintf(str,"n=%g, avg=%g, sig=%g, min=%g, max=%g",\
+    (UtSprintf(str,"n=%g, avg=%g, sig=%g, min=%g, max=%g",\
 		  	(st)->n,(st)->avg,(st)->var,(st)->min,(st)->max))
 
 #define MT_STAT_SPRINT2(str,st) \
-    ((sprintf(str,"n=%g avg=%g, sig=%g, min=%g, max=%g",\
+    ((UtSprintf(str,"n=%g avg=%g, sig=%g, min=%g, max=%g",\
 		  	(st)->n, (st)->avg,(st)->var,(st)->min,(st)->max)),str)
 
 #define V2_SQLEN(x,y) ((x)*(x)+(y)*(y))

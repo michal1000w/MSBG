@@ -545,10 +545,9 @@ void MultiresSparseGrid::applyChannelPdeFast(
 	    hid=MT_GXYZ(hsx,hsx2, haloSize, haloSize+vy, haloSize+vz);
 	    vx<bsx; vx+=SIMDW,vid+=SIMDW,hid+=SIMDW) 
 	{
-	  const float * __restrict ph=dataHaloBlock+hid;
-	  Vec8f phi = Vec8f().load(ph),
-		phiPrev = phi,
-		phi0;
+		  const float * __restrict ph=dataHaloBlock+hid;
+		  Vec8f phi = Vec8f().load(ph),
+			phi0;
 
 	  if( doHardConstraints||doSoftConstraints )
 	  {
@@ -683,7 +682,7 @@ void MultiresSparseGrid::applyChannelPdeFast(
 	    // 
 	    // Regular laplacian smothing
 	    //
-	    Vec8f F0=phi,F1,F2,F3,F4,F5,F6;
+		    Vec8f F0=phi,F1,F2,F3,F4,F5,F6;	  
 	   
 	    F1.load( ph-1 );
 	    F2.load( ph+1 );
@@ -717,7 +716,7 @@ void MultiresSparseGrid::applyChannelPdeFast(
 	    // 
 	    // Simple diffusion
 	    //
-	    Vec8f F0=phi,F1,F2,F3,F4,F5,F6;	  
+		    Vec8f F1,F2,F3,F4,F5,F6;	  
 	    F1.load( ph-1 );
 	    F2.load( ph+1 );
 	    F3.load( ph-18 );
@@ -793,7 +792,7 @@ void MultiresSparseGrid::applyChannelPdeFast(
 	  }
 	  else if(laplTyp==17 )  // Simple Diffusion (Jacobi)
 	  {
-	    Vec8f F0=phi,F1,F2,F3,F4,F5,F6;	  
+		    Vec8f F1,F2,F3,F4,F5,F6;	  
 	    F1.load( ph-1 );
 	    F2.load( ph+1 );
 	    F3.load( ph-18 );
@@ -2199,7 +2198,7 @@ void MultiresSparseGrid::buildGaussianPyramidNew(
       static int pnlNr[]={-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
       UT_ASSERT0(levelMg<ARRAY_LENGTH(pnlNr));
       char chbuf[200];
-      sprintf(chbuf,"Gaussian pyramid L=%d",levelMg+1);
+      UtSprintf(chbuf,"Gaussian pyramid L=%d",levelMg+1);
       visualizeSlices( 	MiGetAuxPanel2(&pnlNr[levelMg],chbuf),
 		  chan,
 		  IP_NEAREST,
@@ -2275,7 +2274,7 @@ void MultiresSparseGrid::buildGaussianPyramid(
       static int pnlNr[]={-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
       UT_ASSERT0(levelMg<ARRAY_LENGTH(pnlNr));
       char chbuf[200];
-      sprintf(chbuf,"Gaussian pyramid L=%d",levelMg);
+      UtSprintf(chbuf,"Gaussian pyramid L=%d",levelMg);
       visualizeSlices( 	MiGetAuxPanel2(&pnlNr[levelMg],chbuf),
 		  chan,
 		  IP_NEAREST,

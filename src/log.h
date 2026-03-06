@@ -42,25 +42,25 @@ extern char LogSaveLoc[];
 #define TRCWARN(x) \
 { if( LogLevel >= 1 ) { \
   LogLock(); \
-  sprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogWarn x;  \
+  UtSprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogWarn x;  \
   LogUnlock(); }}
 
 #define TRCINFO(x) \
 { if( LogLevel >= 1 ) { \
   LogLock(); \
-  sprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogInfo x;  \
+  UtSprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogInfo x;  \
   LogUnlock(); }}
 
 #define TRCERR(x) \
 { if( LogLevel >= 1 ) { \
   LogLock(); \
-  sprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogErr x;  \
+  UtSprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogErr x;  \
   LogUnlock(); }}
 
 #define TRCERRR(x,rc) \
 { if( LogLevel >= 1 ) { \
   LogLock(); \
-  sprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogErr x; \
+  UtSprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogErr x; \
   LogUnlock(); \
   } \
   raiseRc( rc ) }
@@ -69,7 +69,7 @@ extern char LogSaveLoc[];
 #define TRCERRT(x,rc) \
 { if( LogLevel >= 1 ) { \
   LogLock(); \
-  sprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogErr x; \
+  UtSprintf(LogSaveLoc,"  <%-36.36s %d>",__FILE__,__LINE__); LogErr x; \
   LogUnlock(); } \
   throw( rc ); }
 #endif

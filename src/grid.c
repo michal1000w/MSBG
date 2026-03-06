@@ -1073,8 +1073,7 @@ int G3D_DownSamplePyraLevel(
 
   r = 2;
 
-  if((do_time = (LogLevel>=2)&&
-		(bmpHi->n>10000000)));
+  do_time = (LogLevel>=2) && (bmpHi->n>10000000);
 
   if(do_time)
   {
@@ -1579,7 +1578,6 @@ G3D_Grid G3D_CreateGrid0( int sx, int sy, int sz,
   }
   return adm;
 }
-
 
 
 

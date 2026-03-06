@@ -548,7 +548,7 @@ void MultiresSparseGrid::traceCellNeighborhoodInfo(
   
   CellFlags flags0 = cn0->flags[0];
 
-  if(!opt&1)
+  if(!(opt & 1))
   {
     _lastErrNum++;
     _lastErrX = x;
