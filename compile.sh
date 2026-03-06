@@ -294,11 +294,27 @@ OMPC
   if "$CC_BIN" "${ARCH_CFLAGS[@]}" -fopenmp "$TMP_C_FILE" -o "$TMP_BIN_FILE" >/dev/null 2>&1; then
     OMP_CFLAGS_VALUE="-fopenmp"
     OMP_LIB_VALUE="-fopenmp"
-  elif [[ "$HOST_OS" == "Darwin" && -f /opt/homebrew/include/omp.h ]]; then
-    if "$CC_BIN" "${ARCH_CFLAGS[@]}" -Xpreprocessor -fopenmp -I/opt/homebrew/include "$TMP_C_FILE" -L/opt/homebrew/lib -lomp -o "$TMP_BIN_FILE" >/dev/null 2>&1; then
-      OMP_CFLAGS_VALUE="-Xpreprocessor -fopenmp -I/opt/homebrew/include"
-      OMP_LIB_VALUE="-L/opt/homebrew/lib -lomp"
+  elif [[ "$HOST_OS" == "Darwin" ]]; then
+    OMP_PREFIXES=()
+    if command -v brew >/dev/null 2>&1; then
+      BREW_OMP_PREFIX="$(brew --prefix libomp 2>/dev/null || true)"
+      if [[ -n "$BREW_OMP_PREFIX" ]]; then
+        OMP_PREFIXES+=("$BREW_OMP_PREFIX")
+      fi
     fi
+    OMP_PREFIXES+=("/opt/homebrew" "/usr/local")
+
+    for omp_prefix in "${OMP_PREFIXES[@]}"; do
+      if [[ -f "$omp_prefix/include/omp.h" ]]; then
+        if "$CC_BIN" "${ARCH_CFLAGS[@]}" -Xpreprocessor -fopenmp \
+             -I"$omp_prefix/include" "$TMP_C_FILE" \
+             -L"$omp_prefix/lib" -lomp -o "$TMP_BIN_FILE" >/dev/null 2>&1; then
+          OMP_CFLAGS_VALUE="-Xpreprocessor -fopenmp -I$omp_prefix/include"
+          OMP_LIB_VALUE="-L$omp_prefix/lib -lomp"
+          break
+        fi
+      fi
+    done
   fi
 
   rm -f "$TMP_C_FILE" "$TMP_BIN_FILE"

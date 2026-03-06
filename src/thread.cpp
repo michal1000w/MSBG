@@ -20,6 +20,7 @@
 #include <limits.h>
 #include <math.h>
 #include <vectorclass/vectorclass.h>
+#include <memory>
 #include "globdef.h"
 #include "mtool.h"
 #include "fastmath.h"
@@ -193,9 +194,11 @@ void ThrInit(void)
 
 void ThrSetMaxNumberOfTBBThreads( int nMaxThreads )
 {
- thrMaxAllowedParallelism=nMaxThreads;
- static tbb::global_control c(tbb::global_control::max_allowed_parallelism, nMaxThreads);
- //static tbb::task_scheduler_init init(1);
+ thrMaxAllowedParallelism = nMaxThreads > 0 ? nMaxThreads : 1;
+ static std::unique_ptr<tbb::global_control> control;
+ control.reset(new tbb::global_control(
+     tbb::global_control::max_allowed_parallelism,
+     static_cast<std::size_t>(thrMaxAllowedParallelism)));
 }
 
 void ThrGetMaxNumberOfThreads( int *pNumThreadsOMP,
@@ -203,4 +206,3 @@ void ThrGetMaxNumberOfThreads( int *pNumThreadsOMP,
 {
   return THR::getMaxNumberOfThreads( pNumThreadsOMP, pNumThreadsTBB );
 }
-

@@ -172,7 +172,7 @@ static void render_scene( int testCase, MSBG::MultiresSparseGrid *msbg, int chan
   TIMER_STOP(&tm);
   TRCP(("CPU (rendering) %.2f sec, %.0f pixels/sec)\n",
     (double)TIMER_DIFF_MS(&tm)/1000.,
-    ((double)sy*sy)/(double)(TIMER_DIFF_MS(&tm)/1000.0)));	
+    ((double)sx*sy)/(double)(TIMER_DIFF_MS(&tm)/1000.0)));	
 
   PnlShowBitmap2( pnl, B );  
 
@@ -495,9 +495,7 @@ int msbg_test_sparse(int testCase, const char *basePointsFile,
     [&]( ThreadLocals &tls, int tid )  // Reduce thread locals
     {
       UT_VECTOR_APPEND( activeBlocks, tls.activeBlocks );
-    },
-    
-    0,/*doSerial=*/true // Execute serially to reduce contention caused by memory page initialization  
+    }
 	
   );
 

@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "tbb_compat.h"
+#include "openmp_compat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -165,35 +166,38 @@ int main(int argc, char **argv)
   {
     int nMaxOmpThreadsAct,
 	nMaxTBBThreadsAct,
-	nMaxThreadsAct;
+	nMaxThreadsAct,
+	nCpuThreads;
 
     ThrInit();
 
     ThrGetMaxNumberOfThreads( &nMaxOmpThreadsAct, 
 			      &nMaxTBBThreadsAct );
     nMaxThreadsAct = MAX( nMaxOmpThreadsAct, nMaxTBBThreadsAct );
+    nCpuThreads = omp_get_num_procs();
+    if(nCpuThreads<=0) nCpuThreads=nMaxThreadsAct;
 
-    if(nMaxThreads>0)
+    if(nMaxThreads<=0) 
     {
-      TRCP(("Setting max. TBB threads %d\n",nMaxThreads));
-      ThrSetMaxNumberOfTBBThreads( nMaxThreads );
-    }
-
-    if(nMaxThreads<=0)
-    {
-      nMaxThreads = nMaxThreadsAct;
+      nMaxThreads = nCpuThreads;
     }
     else
     {
-      nMaxThreads = MIN( nMaxThreadsAct, nMaxThreads );
+      nMaxThreads = MIN( nCpuThreads, nMaxThreads );
     }
 
-    UT_ASSERT0(nMaxThreads<=THR_MAX_THREADS);
+    nMaxThreads = MIN(nMaxThreads, THR_MAX_THREADS);
     
     if(nMaxThreads<=0) nMaxThreads=nMaxThreadsAct;
 
+    omp_set_num_threads(nMaxThreads);
+    ThrSetMaxNumberOfTBBThreads( nMaxThreads );
+    ThrGetMaxNumberOfThreads( &nMaxOmpThreadsAct, &nMaxTBBThreadsAct );
+
     TRCP(("Using %d of maximum number of threads OMP=%d TBB=%d \n",nMaxThreads,
 	  nMaxOmpThreadsAct, nMaxTBBThreadsAct ));
+    TRCP(("Thread backends: OpenMP=%s TBB=%s\n",
+	  msbg_openmp_backend_name(), msbg_tbb_backend_name()));
 
     //TRCP(("omp_proc_bind() = %d\n",omp_get_proc_bind()));
 

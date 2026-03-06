@@ -289,6 +289,7 @@ void ThrIRunParallel( size_t _nTasks,
     [&](const tbb::blocked_range<size_t>& range) 
     {
       int tid = tbb::this_task_arena::current_thread_index();
+      if(tid<0 || tid>=THR_MAX_THREADS) tid = 0;
       //TRCP(("tid=%d -> %d-%d/%d\n",tid,range.begin(),range.end(),_nTasks));
       TLS &tls = _locals[tid].slot;
       for(size_t i=range.begin(); i !=range.end(); ++i)

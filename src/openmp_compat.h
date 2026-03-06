@@ -16,7 +16,10 @@
 
 #if defined(_OPENMP)
 #include <omp.h>
+#define MSBG_OPENMP_BACKEND_NAME "OpenMP runtime"
 #else
+
+#define MSBG_OPENMP_BACKEND_NAME "OpenMP stubs"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +46,14 @@ static inline int omp_get_max_threads(void) {
   return msbg_omp_hw_threads();
 }
 
+static inline int omp_get_num_procs(void) {
+  return msbg_omp_hw_threads();
+}
+
+static inline void omp_set_num_threads(int n_threads) {
+  (void)n_threads;
+}
+
 static inline int omp_in_parallel(void) {
   return 0;
 }
@@ -52,5 +63,9 @@ static inline int omp_in_parallel(void) {
 #endif
 
 #endif  // _OPENMP
+
+static inline const char *msbg_openmp_backend_name(void) {
+  return MSBG_OPENMP_BACKEND_NAME;
+}
 
 #endif  // MSBG_OPENMP_COMPAT_H
