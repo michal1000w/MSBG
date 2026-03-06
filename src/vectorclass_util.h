@@ -208,9 +208,13 @@ inline float vclampz( float a )
 #else
 inline float vclampz(float a )
 {
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
   float result = a;
   asm ("maxss %1, %0" : "+x" (result) : "x" (0.0f));
   return result;
+#else
+  return a < 0.0f ? 0.0f : a;
+#endif
 }
 #endif
 
@@ -240,16 +244,24 @@ inline Vec8f vapprox_sqrt( const Vec8f &a )
 
 inline float vmin(float a, float b)
 {
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
   float result = a;
   asm ("minss %1, %0" : "+x" (result) : "x" (b));
   return result;
+#else
+  return a < b ? a : b;
+#endif
 }
 
 inline float vmax(float a, float b)
 {
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
   float result = a;
   asm ("maxss %1, %0" : "+x" (result) : "x" (b));
   return result;
+#else
+  return a > b ? a : b;
+#endif
 }
 
 /////////////////////////////////////////////////////
@@ -730,8 +742,13 @@ inline void vstore8(Vec8ui &w, uint32_t *dest)
 
 static inline double horizontal_max( const Vec4d& a )
 {
-  return std::max(std::max(vdget_x(a),vdget_y(a)),
-	          std::max(vdget_z(a),vdget_w(a)));
+  double m0 = vdget_x(a);
+  double m1 = vdget_y(a);
+  double m2 = vdget_z(a);
+  double m3 = vdget_w(a);
+  double mh0 = m0 > m1 ? m0 : m1;
+  double mh1 = m2 > m3 ? m2 : m3;
+  return mh0 > mh1 ? mh0 : mh1;
 }
 
 static inline float horizontal_max(__m128 x) {
@@ -1194,8 +1211,8 @@ _mm_maskmoveu_si128( _mm_castps_si128(a), msk, \
 #undef _mm256_cvtpd_ps
 static inline __m128 _mm256_cvtpd_ps (Vec4d a)
 {
-  return blend4f<0,1,4,5>(_mm_cvtpd_ps(a.get_low()),
-      			  _mm_cvtpd_ps(a.get_high()));
+  return blend4f<0,1,4,5>(Vec4f(_mm_cvtpd_ps(a.get_low())),
+      			  Vec4f(_mm_cvtpd_ps(a.get_high())));
 }
 
 #undef _mm256_cvtps_pd
@@ -1310,8 +1327,8 @@ static inline void vmaskstore4( double *dest, const Vec4d& x, const Vec4ui mask 
 inline Vec4f vconv_pd_ps( const Vec4d& a )
 {
   #if INSTRSET < 7		// non-AVX
-  return blend4f<0,1,4,5>(_mm_cvtpd_ps(a.get_low()),
-			    _mm_cvtpd_ps(a.get_high()));
+  return blend4f<0,1,4,5>(Vec4f(_mm_cvtpd_ps(a.get_low())),
+			    Vec4f(_mm_cvtpd_ps(a.get_high())));
   #else 
   return _mm256_cvtpd_ps( a );
   #endif

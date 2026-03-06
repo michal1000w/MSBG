@@ -13,7 +13,7 @@
 #include <tuple> 
 #include <iostream>
 #include <fstream>
-#include <tbb/tbb.h>
+#include "tbb_compat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>

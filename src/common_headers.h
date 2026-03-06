@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <tbb/tbb.h>
+#include "tbb_compat.h"
 #include "globdef.h"
 #include "mtool.h"
 #include "plot.h"

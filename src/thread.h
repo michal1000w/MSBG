@@ -25,7 +25,8 @@ extern int thrIsRunningParallel;
 #include <memory>
 #include <atomic>
 #include <thread>
-#include <tbb/tbb.h>
+#include "openmp_compat.h"
+#include "tbb_compat.h"
 #include <functional>
 //#include <thread>
 //
@@ -1442,4 +1443,3 @@ void ThrSetMaxNumberOfTBBThreads( int nMaxThreads );
 #endif
 
 #endif // THR_H
-

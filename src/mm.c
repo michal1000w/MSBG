@@ -9,7 +9,7 @@
  ******************************************************************************/
 
 #include <stdio.h>
-#include <omp.h>
+#include "openmp_compat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>

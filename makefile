@@ -12,8 +12,10 @@ CSCOPE_EXE = c:/msys64/usr/bin/cscope.exe
 GTAGS_EXE = c:/msys64/mingw64/bin/gtags
 
 export GTAGSFORCECPP = 1
+ifdef MIMP_ON_WINDOWS
 export TMPDIR = c:/tmp
 export TMP = c:/tmp
+endif
 
 vpath %.c $(MIMP_SOURCE_PATH)
 vpath %.cpp $(MIMP_SOURCE_PATH)
@@ -26,6 +28,7 @@ MAKELIB = $(AR) rv
 
 CFLAGS_MT = -D_REENTRANT 
 LFLAGS_MT = -lpthread
+LIB_OMP ?= -lgomp
 
 CFLAGS_OPT = -O3
 #CFLAGS_OPT = -g
@@ -159,27 +162,27 @@ LD_LIBS_FOR_MSBG_DEMO = \
 ifdef MIMP_ON_LINUX
 
 msbg_demo$(EXE): $(OBJS_MSBG_DEMO) $(STATIC_LIB)
-	$(LD) $(LDFLAGS) $@ \
+	$(LD) $(LDFLAGS) -o $@ \
 	  $(OBJS_MSBG_DEMO) \
 	  -L. -l$(LIBNAME) \
 	  $(LD_LIBS_FOR_MSBG_DEMO) \
 		$(LDFLAGS_BW) \
 		$(LDFLAGS_PROF) \
-		-lgomp \
+		$(LIB_OMP) \
 		$(LFLAGS_MT)
 else
 # 
 # native windows application via MSYS2/MinGw64
 #
 msbg_demo$(EXE): $(OBJS_MSBG_DEMO) $(STATIC_LIB)
-	$(LD) $(LDFLAGS) $@ \
+	$(LD) $(LDFLAGS) -o $@ \
 	  -static-libgcc -static-libstdc++ \
 	  $(OBJS_MSBG_DEMO) \
 	  -L. -l$(LIBNAME) \
 	  $(LD_LIBS_FOR_MSBG_DEMO) \
 	  $(LDFLAGS_BW) \
 	  $(LDFLAGS_PROF) \
-	  -lgomp \
+	  $(LIB_OMP) \
 	  -lwinmm \
 	  -Wl,--enable-auto-import \
 	  -Wl,--subsystem,console -mwindows \
@@ -252,4 +255,3 @@ depend: gtags_make
 	done
 
 #include $(MIMP_SOURCE_PATH)/dependencies.mk
-

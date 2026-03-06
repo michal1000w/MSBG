@@ -13,7 +13,7 @@
 #endif
 
 #include <stdio.h>
-#include <omp.h>
+#include "openmp_compat.h"
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -935,10 +935,10 @@ int UtGetFileSize( char *fpath, size_t *p_size )
 	  fpath,(int)errno),MI_EIO);
   }
 
-  off64_t fsize = lseek64(fd, 0, SEEK_END);
+  off_t fsize = lseek(fd, 0, SEEK_END);
   if(fsize<0)
   {
-    TRCERRR(("lseek64 failed for file '%s' errno=%d\n",
+    TRCERRR(("lseek failed for file '%s' errno=%d\n",
 	  fpath,(int)errno),MI_EIO);
   }
 
@@ -2795,5 +2795,4 @@ UtFSM *UtCreateFSM( size_t maxBlocks, size_t blockSize )
   }
   return fsm;
 }
-
 

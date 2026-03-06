@@ -15,7 +15,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-#include <omp.h>
+#include "openmp_compat.h"
 #include <math.h>
 #include <errno.h>
 #include "globdef.h"

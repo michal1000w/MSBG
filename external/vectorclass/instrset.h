@@ -62,6 +62,13 @@
 #endif // INSTRSET
 
 // Include the appropriate header file for intrinsic functions
+#if defined(MSBG_USE_SSE2NEON)
+#if INSTRSET < 2
+#undef INSTRSET
+#define INSTRSET 2
+#endif
+#include <sse2neon.h>
+#else
 #if INSTRSET > 7                       // AVX2 and later
 #if defined (__GNUC__) && ! defined (__INTEL_COMPILER)
 #include <x86intrin.h>                 // x86intrin.h includes header files for whatever instruction 
@@ -85,6 +92,7 @@
 #elif INSTRSET == 1
 #include <xmmintrin.h>                 // SSE
 #endif // INSTRSET
+#endif // MSBG_USE_SSE2NEON
 
 #if INSTRSET >= 8 && !defined(__FMA__)
 // Assume that all processors that have AVX2 also have FMA3
@@ -98,7 +106,7 @@
 #endif
 
 // AMD  instruction sets
-#if defined (__XOP__) || defined (__FMA4__)
+#if !defined(MSBG_USE_SSE2NEON) && (defined (__XOP__) || defined (__FMA4__))
 #ifdef __GNUC__
 #include <x86intrin.h>                 // AMD XOP (Gnu)
 #else
@@ -109,12 +117,12 @@
 #endif // __XOP__ 
 
 // FMA3 instruction set
-#if defined (__FMA__) && (defined(__GNUC__) || defined(__clang__))  && ! defined (__INTEL_COMPILER)
+#if !defined(MSBG_USE_SSE2NEON) && defined (__FMA__) && (defined(__GNUC__) || defined(__clang__))  && ! defined (__INTEL_COMPILER)
 #include <fmaintrin.h> 
 #endif // __FMA__ 
 
 // FMA4 instruction set
-#if defined (__FMA4__) && (defined(__GNUC__) || defined(__clang__))
+#if !defined(MSBG_USE_SSE2NEON) && defined (__FMA4__) && (defined(__GNUC__) || defined(__clang__))
 #include <fma4intrin.h> // must have both x86intrin.h and fma4intrin.h, don't know why
 #endif // __FMA4__
 
@@ -245,7 +253,7 @@ const int V_DC = -256;
 // input:  eax = functionnumber, ecx = 0
 // output: eax = output[0], ebx = output[1], ecx = output[2], edx = output[3]
 static inline void cpuid (int output[4], int functionnumber) {	
-#if defined(__GNUC__) || defined(__clang__)           // use inline assembly, Gnu/AT&T syntax
+#if (defined(__GNUC__) || defined(__clang__)) && (defined(__i386__) || defined(__x86_64__))  // use inline assembly, Gnu/AT&T syntax
     int a, b, c, d;
     __asm("cpuid" : "=a"(a),"=b"(b),"=c"(c),"=d"(d) : "a"(functionnumber),"c"(0) : );
     output[0] = a;
@@ -253,20 +261,12 @@ static inline void cpuid (int output[4], int functionnumber) {
     output[2] = c;
     output[3] = d;
 
-#elif defined (_MSC_VER)                              // Microsoft compiler, intrin.h included
+#elif defined (_MSC_VER) && (defined(_M_IX86) || defined(_M_X64)) // Microsoft compiler, intrin.h included
     __cpuidex(output, functionnumber, 0);             // intrinsic function for CPUID
 
-#else                                                 // unknown platform. try inline assembly with masm/intel syntax
-    __asm {
-        mov eax, functionnumber
-        xor ecx, ecx
-        cpuid;
-        mov esi, output
-            mov [esi],    eax
-            mov [esi+4],  ebx
-            mov [esi+8],  ecx
-            mov [esi+12], edx
-    }
+#else                                                 // unsupported CPU/ABI
+    (void)functionnumber;
+    output[0] = output[1] = output[2] = output[3] = 0;
 #endif
 }
 
@@ -312,9 +312,7 @@ static inline void cpuid (int output[4], int functionnumber) {
 #if defined (__GNUC__) || defined(__clang__)
     static inline uint32_t bit_scan_forward (uint32_t a) __attribute__ ((pure));
     static inline uint32_t bit_scan_forward (uint32_t a) {	
-        uint32_t r;
-        __asm("bsfl %1, %0" : "=r"(r) : "r"(a) : );
-        return r;
+        return (uint32_t)__builtin_ctz(a);
     }
     // to do: make 64 bit version
 #else
@@ -345,9 +343,7 @@ static inline void cpuid (int output[4], int functionnumber) {
 #if defined (__GNUC__) || defined(__clang__)
     static inline uint32_t bit_scan_reverse (uint32_t a) __attribute__ ((pure));
     static inline uint32_t bit_scan_reverse (uint32_t a) {	
-        uint32_t r;
-        __asm("bsrl %1, %0" : "=r"(r) : "r"(a) : );
-        return r;
+        return (uint32_t)(31u - (uint32_t)__builtin_clz(a));
     }
 #else
     static inline uint32_t bit_scan_reverse (uint32_t a) {	

@@ -10,13 +10,26 @@
 //#define USE_OPENEXR
 
 #include <stdio.h>
-#include <omp.h>
+#include "openmp_compat.h"
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+
+#if !defined(MSBG_DISABLE_JPEG)
+#if defined(__has_include)
+#if __has_include(<jpeglib.h>)
+#define MSBG_WITH_JPEG 1
+#endif
+#else
+#define MSBG_WITH_JPEG 1
+#endif
+#endif
+
+#if defined(MSBG_WITH_JPEG)
 #include <jpeglib.h>
+#endif
 #ifdef USE_OPENEXR
 #include <openexr/ImathBox.h>
 #include <openexr/ImfRgbaFile.h>
@@ -409,6 +422,7 @@ int BmpSaveBitmapJPG( BmpBitmap *bmp, char *fname,
     			int quality,  // [0..100] 0=use-default
     			unsigned opt )
 {
+#if defined(MSBG_WITH_JPEG)
   int rcThis=0;
   LongInt i;
   FILE *outfile=NULL;
@@ -484,6 +498,14 @@ rcCatch:
   if(outfile) fclose(outfile);
   FREEMEM(raw_image);
   return(rcThis);
+#else
+  USE(bmp);
+  USE(fname);
+  USE(quality);
+  USE(opt);
+  TRCERR(("JPEG support is disabled or jpeglib headers were not found.\n"));
+  return MI_ENOTIMPL;
+#endif
 }
 
 MSBG_NAMESPACE_END

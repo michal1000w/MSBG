@@ -10,7 +10,7 @@
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>
-#include <tbb/tbb.h>
+#include "tbb_compat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -219,9 +219,22 @@ int main(int argc, char **argv)
 
   TRCP(("opcode=%d fname=%s %dx%dx%d\n",testCase,filename,sx,sy,sz)); 
 
-  const char *basePointsFile = testCase==2 ? 
-    				  "../data/bun_zipper.ply" :
-				  "../data/bun_zipper_res2.ply";
+  const char *basePointsFilePrimary = testCase==2 ? 
+				      "../data/bun_zipper.ply" :
+				      "../data/bun_zipper_res2.ply";
+  const char *basePointsFileFallback = testCase==2 ? 
+				       "data/bun_zipper.ply" :
+				       "data/bun_zipper_res2.ply";
+  const char *basePointsFile = access(basePointsFilePrimary, R_OK) == 0 ?
+				basePointsFilePrimary : basePointsFileFallback;
+
+  if(access(basePointsFile, R_OK) != 0)
+  {
+    TRCERR(("base points file not found: '%s' or '%s'\n",
+	    basePointsFilePrimary, basePointsFileFallback));
+    return 1;
+  }
+
   msbg_test_sparse(testCase, basePointsFile, blockSize0, sx, sy, sz);
   
   return 0;

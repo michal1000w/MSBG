@@ -9,11 +9,10 @@ make -f ../makefile \
   CFLAGS_TBB="" \
   LIB_OMP="-lgomp"\
   CC="gcc" \
-  LD="g++  -o" \
+  LD="g++" \
   LDFLAGS_BW=\
   AR="ar" \
   ISPC="ispc"\
   CFLAGS_BW="-m64 -DMI_WITH_64BIT"\
   -j \
   $1
-

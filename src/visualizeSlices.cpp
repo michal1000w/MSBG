@@ -12,7 +12,7 @@
 #include <float.h>
 #include <limits.h>
 #include <math.h>
-#include <tbb/tbb.h>
+#include "tbb_compat.h"
 #include <vectorclass/vectorclass.h>
 #include "vectorclass_util.h"
 #include "globdef.h"
@@ -77,7 +77,12 @@ void MultiresSparseGrid::saveVisualizationBitmap( BmpBitmap *B, char *title )
   if(_visSaveAsBitmap & 2 )
   {
     // Lossless
-    strcat(chbuf,".png"); strcat(path,chbuf);
+    #ifdef MSBG_DISABLE_PNG
+    strcat(chbuf,".ppm");
+    #else
+    strcat(chbuf,".png");
+    #endif
+    strcat(path,chbuf);
     TRC(("Saving output image: '%s'\n",path));
     rc = BmpSaveBitmapPNG( B, path, NULL, BMP_PNG );
   }

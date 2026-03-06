@@ -35,8 +35,10 @@
 #endif
 #endif
 #else
+#ifndef __cplusplus
 #define calloc xxcalloc   
 #define realloc xxrealloc  
+#endif
 #endif
 
 //#ifdef MI_WITH_ICC

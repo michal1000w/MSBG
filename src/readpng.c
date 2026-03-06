@@ -17,12 +17,28 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <setjmp.h>
+
+#if !defined(MSBG_DISABLE_PNG)
+#if defined(__has_include)
+#if __has_include(<zlib.h>) && __has_include(<png.h>)
+#define MSBG_WITH_PNG 1
+#endif
+#else
+#define MSBG_WITH_PNG 1
+#endif
+#endif
+
+#if defined(MSBG_WITH_PNG)
 #include <zlib.h>
 #include <png.h>
+#endif
+
 #include "globdef.h"
 #include "mtool.h"
 #include "util.h"
 #include "bitmap.h"
+
+#if defined(MSBG_WITH_PNG)
 
 typedef int            BOOL_;
 typedef int32_t       LONG_;
@@ -395,4 +411,104 @@ error_abort:
 	return FALSE;
 
 }
+
+#else
+
+static unsigned char msbg_u8_from_float(float v)
+{
+  if(v >= 0.0f && v <= 1.0f) v *= 255.0f;
+  if(v < 0.0f) v = 0.0f;
+  if(v > 255.0f) v = 255.0f;
+  return (unsigned char)(v + 0.5f);
+}
+
+static unsigned char msbg_u8_from_ushort(unsigned short v)
+{
+  return (unsigned char)((v + 128u) >> 8);
+}
+
+int BmpWritePNG(FILE *fp, BmpBitmap *bmp, CoConverter *cc, unsigned opt)
+{
+  LongInt po, nPix;
+  int doGrey;
+
+  USE(cc);
+
+  if(!fp || !bmp || bmp->sx <= 0 || bmp->sy <= 0) return FALSE;
+
+  doGrey = (opt & BMP_GREY_ONLY) != 0;
+  if(doGrey && !bmp->dataGrey && !bmp->dataUshort0 && !bmp->dataFloat[0])
+  {
+    doGrey = FALSE;
+  }
+
+  if(doGrey)
+  {
+    if(fprintf(fp, "P5\n%lld %lld\n255\n",
+	       (long long)bmp->sx, (long long)bmp->sy) < 0) return FALSE;
+  }
+  else
+  {
+    if(fprintf(fp, "P6\n%lld %lld\n255\n",
+	       (long long)bmp->sx, (long long)bmp->sy) < 0) return FALSE;
+  }
+
+  nPix = bmp->sx * bmp->sy;
+  for(po = 0; po < nPix; po++)
+  {
+    if(doGrey)
+    {
+      unsigned char g = 0;
+
+      if(bmp->dataGrey) g = (unsigned char)bmp->dataGrey[po];
+      else if(bmp->dataUshort0) g = msbg_u8_from_ushort(bmp->dataUshort0[po]);
+      else if(bmp->dataFloat[0]) g = msbg_u8_from_float(bmp->dataFloat[0][po]);
+      else if(bmp->data)
+      {
+	const int c = bmp->data[po];
+	const int r = BMP_RED(c), gg = BMP_GREEN(c), b = BMP_BLUE(c);
+	g = (unsigned char)((30 * r + 59 * gg + 11 * b) / 100);
+      }
+
+      if(fwrite(&g, 1, 1, fp) != 1) return FALSE;
+    }
+    else
+    {
+      unsigned char rgb[3] = {0, 0, 0};
+
+      if(bmp->data)
+      {
+	const int c = bmp->data[po];
+	rgb[0] = (unsigned char)BMP_RED(c);
+	rgb[1] = (unsigned char)BMP_GREEN(c);
+	rgb[2] = (unsigned char)BMP_BLUE(c);
+      }
+      else if(bmp->dataFloat[0] && bmp->dataFloat[1] && bmp->dataFloat[2])
+      {
+	rgb[0] = msbg_u8_from_float(bmp->dataFloat[0][po]);
+	rgb[1] = msbg_u8_from_float(bmp->dataFloat[1][po]);
+	rgb[2] = msbg_u8_from_float(bmp->dataFloat[2][po]);
+      }
+      else if(bmp->dataUshort0)
+      {
+	rgb[0] = rgb[1] = rgb[2] = msbg_u8_from_ushort(bmp->dataUshort0[po]);
+      }
+      else if(bmp->dataGrey)
+      {
+	rgb[0] = rgb[1] = rgb[2] = (unsigned char)bmp->dataGrey[po];
+      }
+      else if(bmp->dataFloat[0])
+      {
+	rgb[0] = rgb[1] = rgb[2] = msbg_u8_from_float(bmp->dataFloat[0][po]);
+      }
+
+      if(fwrite(rgb, 1, 3, fp) != 3) return FALSE;
+    }
+  }
+
+  USE(fp);
+  return TRUE;
+}
+
+#endif
 

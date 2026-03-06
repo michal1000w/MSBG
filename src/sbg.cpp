@@ -9,7 +9,7 @@
  ******************************************************************************/
 
 #include <stdio.h>
-#include <omp.h>
+#include "openmp_compat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -17,7 +17,7 @@
 #include <float.h>
 #include <limits.h>
 #include <math.h>
-#include <tbb/tbb.h>
+#include "tbb_compat.h"
 #include <vectorclass/vectorclass.h>
 #include "globdef.h"
 #include "mtool.h"

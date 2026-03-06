@@ -9,8 +9,8 @@
  ******************************************************************************/
 
 #include <stdio.h>
-#include <omp.h>
-#include <tbb/tbb.h>
+#include "openmp_compat.h"
+#include "tbb_compat.h"
 //#include <tbb/global_control.h>
 #include <stdlib.h>
 #include <string.h>

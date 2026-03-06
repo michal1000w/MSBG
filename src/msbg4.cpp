@@ -10,7 +10,7 @@
 
 #include "common_headers.h"
 
-#include "omp.h"
+#include "openmp_compat.h"
 
 namespace MSBG 
 {
