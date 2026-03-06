@@ -13,6 +13,11 @@
 #include "vectorclass_util2.h"
 #include "format_compat.h"
 
+#ifndef _MM_MK_INSERTPS_NDX
+#define _MM_MK_INSERTPS_NDX(src, dst, zero_mask) \
+  (((src) << 6) | ((dst) << 4) | (zero_mask))
+#endif
+
 /////////////////////////////////////////////////////
 //  Misc. utility
 /////////////////////////////////////////////////////

@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <unistd.h>
-#ifdef MIMP_ON_LINUX
+#if defined(MIMP_ON_LINUX) && !defined(MSBG_USE_SSE2NEON)
 #include <mm_malloc.h>
 #endif
 

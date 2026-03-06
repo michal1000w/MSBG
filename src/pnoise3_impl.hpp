@@ -19,7 +19,11 @@
 #include <float.h>
 #include <errno.h>
 #include <assert.h>
+#if defined(MSBG_USE_SSE2NEON)
+#include <sse2neon.h>
+#else
 #include <xmmintrin.h>
+#endif
 #include <vectorclass/vectorclass.h>
 #include <vectorclass/special/vector3d.h>
 #include "vectorclass_util.h"

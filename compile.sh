@@ -61,11 +61,26 @@ join_by_space() {
   echo "$*"
 }
 
+compiler_supports_flags() {
+  local compiler="$1"
+  shift
+  local tmp_base tmp_src tmp_obj
+  tmp_base="$(mktemp /tmp/msbg_flag_probe.XXXXXX)"
+  tmp_src="${tmp_base}.c"
+  tmp_obj="${tmp_base}.o"
+  printf 'int main(void) { return 0; }\n' > "$tmp_src"
+  if "$compiler" "$@" -c "$tmp_src" -o "$tmp_obj" >/dev/null 2>&1; then
+    rm -f "$tmp_base" "$tmp_src" "$tmp_obj"
+    return 0
+  fi
+  rm -f "$tmp_base" "$tmp_src" "$tmp_obj"
+  return 1
+}
+
 BUILD_MODE="demo"
 BUILD_TYPE="release"
 BUILD_DIR="build"
 TARGET_ARCH_INPUT="native"
-TARGET_ARCH_EXPLICIT=0
 CLEAN_BUILD=0
 OPENMP_MODE="auto"
 FORCE_TBB_FALLBACK=0
@@ -96,7 +111,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --arch)
       TARGET_ARCH_INPUT="$2"
-      TARGET_ARCH_EXPLICIT=1
       shift
       ;;
     --jobs)
@@ -171,7 +185,6 @@ ARCH_LDFLAGS=()
 EXTRA_INCLUDE_FLAGS=()
 EXTRA_LIB_FLAGS=()
 FEATURE_DEFS=()
-FALLBACK_X86_ON_ARM=0
 
 if [[ "$HOST_OS" == "Darwin" ]]; then
   if [[ "$TARGET_ARCH" != "x86_64" && "$TARGET_ARCH" != "arm64" ]]; then
@@ -184,6 +197,8 @@ if [[ "$TARGET_ARCH" == "arm64" ]]; then
   SSE2NEON_HEADER_PATH=""
   if [[ -n "${SSE2NEON_HEADER:-}" && -f "${SSE2NEON_HEADER}" ]]; then
     SSE2NEON_HEADER_PATH="${SSE2NEON_HEADER}"
+  elif [[ -f "$ROOT_DIR/external/sse2neon/sse2neon.h" ]]; then
+    SSE2NEON_HEADER_PATH="$ROOT_DIR/external/sse2neon/sse2neon.h"
   elif [[ -f "/usr/local/include/sse2neon.h" ]]; then
     SSE2NEON_HEADER_PATH="/usr/local/include/sse2neon.h"
   elif [[ -f "/opt/homebrew/include/sse2neon.h" ]]; then
@@ -191,19 +206,12 @@ if [[ "$TARGET_ARCH" == "arm64" ]]; then
   fi
 
   if [[ -n "$SSE2NEON_HEADER_PATH" ]]; then
-    FEATURE_DEFS+=("-DMSBG_USE_SSE2NEON" "-DINSTRSET=2" "-DMAX_VECTOR_SIZE=256")
+    FEATURE_DEFS+=("-DMSBG_USE_SSE2NEON" "-DINSTRSET=2" "-DMAX_VECTOR_SIZE=256" "-DSSE2NEON_SUPPRESS_WARNINGS")
     ARCH_CFLAGS+=("-include" "$SSE2NEON_HEADER_PATH")
-  elif [[ "$HOST_OS" == "Darwin" && "$HOST_ARCH" == "arm64" && "$TARGET_ARCH_EXPLICIT" -eq 0 ]]; then
-    # Automatic host fallback: build x86_64 binary on Apple Silicon when SSE2NEON is unavailable.
-    TARGET_ARCH="x86_64"
-    FALLBACK_X86_ON_ARM=1
-    DISABLE_PNG=1
-    DISABLE_JPEG=1
-    OPENMP_MODE="off"
-    echo "[msbg] sse2neon.h not found; falling back to x86_64 build on Apple Silicon." >&2
-    echo "[msbg] PNG/JPEG fallbacks are enabled for portability in this mode." >&2
+    EXTRA_INCLUDE_FLAGS+=("-I$(dirname "$SSE2NEON_HEADER_PATH")")
+    echo "[msbg] using sse2neon from $SSE2NEON_HEADER_PATH" >&2
   else
-    echo "ARM64 build requires sse2neon.h. Set SSE2NEON_HEADER or install it in /usr/local/include." >&2
+    echo "ARM64 build requires sse2neon.h (set SSE2NEON_HEADER or place it in external/sse2neon)." >&2
     exit 1
   fi
 fi
@@ -216,6 +224,26 @@ else
     ARCH_CFLAGS+=("-m64")
     ARCH_LDFLAGS+=("-m64")
   fi
+fi
+
+NATIVE_CPU_CFLAGS=()
+if [[ "$TARGET_ARCH" == "$HOST_ARCH" ]]; then
+  if [[ "$TARGET_ARCH" == "arm64" ]]; then
+    if compiler_supports_flags "$CC_BIN" "${ARCH_CFLAGS[@]}" -mcpu=native; then
+      NATIVE_CPU_CFLAGS+=("-mcpu=native")
+    elif compiler_supports_flags "$CC_BIN" "${ARCH_CFLAGS[@]}" -march=native; then
+      NATIVE_CPU_CFLAGS+=("-march=native")
+    fi
+  elif [[ "$TARGET_ARCH" == "x86_64" ]]; then
+    if compiler_supports_flags "$CC_BIN" "${ARCH_CFLAGS[@]}" -march=native -mtune=native; then
+      NATIVE_CPU_CFLAGS+=("-march=native" "-mtune=native")
+    elif compiler_supports_flags "$CC_BIN" "${ARCH_CFLAGS[@]}" -march=native; then
+      NATIVE_CPU_CFLAGS+=("-march=native")
+    fi
+  fi
+fi
+if [[ "${#NATIVE_CPU_CFLAGS[@]}" -gt 0 ]]; then
+  ARCH_CFLAGS+=("${NATIVE_CPU_CFLAGS[@]}")
 fi
 
 if [[ "$TARGET_ARCH" == "x86_64" || "$TARGET_ARCH" == "arm64" ]]; then
@@ -251,16 +279,14 @@ if [[ "$HOST_OS" == "Darwin" && "$FORCE_TBB_FALLBACK" -eq 0 ]]; then
   fi
 fi
 
-if [[ "$FALLBACK_X86_ON_ARM" -eq 0 ]]; then
-  for prefix in /opt/homebrew /usr/local; do
-    if [[ -d "$prefix/include" ]]; then
-      EXTRA_INCLUDE_FLAGS+=("-I$prefix/include")
-    fi
-    if [[ -d "$prefix/lib" ]]; then
-      EXTRA_LIB_FLAGS+=("-L$prefix/lib")
-    fi
-  done
-fi
+for prefix in /opt/homebrew /usr/local; do
+  if [[ -d "$prefix/include" ]]; then
+    EXTRA_INCLUDE_FLAGS+=("-I$prefix/include")
+  fi
+  if [[ -d "$prefix/lib" ]]; then
+    EXTRA_LIB_FLAGS+=("-L$prefix/lib")
+  fi
+done
 
 if [[ "$FORCE_TBB_FALLBACK" -eq 0 ]]; then
   TMP_TBB_CPP="$(mktemp /tmp/msbg_tbb_test.XXXXXX.cpp)"
@@ -373,6 +399,9 @@ pushd "$BUILD_PATH" >/dev/null
 
 echo "[msbg] host=${HOST_OS}/${HOST_ARCH} target=${TARGET_ARCH} mode=${BUILD_MODE} type=${BUILD_TYPE}"
 echo "[msbg] CC=${CC_BIN} CXX=${CXX_BIN} jobs=${JOBS}"
+if [[ "${#NATIVE_CPU_CFLAGS[@]}" -gt 0 ]]; then
+  echo "[msbg] native CPU tuning flags: $(join_by_space "${NATIVE_CPU_CFLAGS[@]}")"
+fi
 
 make -f ../makefile \
   OBJE=o \
