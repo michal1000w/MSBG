@@ -26,6 +26,11 @@
 
 MSBG_NAMESPACE_BEGIN
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define MAX_VERT_PER_POLY 10000
 
 #define SNAP_TO_EDGE (1<<0)
@@ -1228,7 +1233,7 @@ int PnlLoadBitmap( char *fnameIn0, PnlPanel *pnl, BmpBitmap *bmpIn,
   {
     if( options & PNL_CLIPBOARD ) 
     {
-      if(!fnameIn) fnameIn = "_clipboard_";   
+      if(!fnameIn) fnameIn = (char*)"_clipboard_";   
     }
     else
     {
@@ -1537,6 +1542,14 @@ int MGWdelbmp(int NM)
 PnlPanel *MiGetAuxPanel2(int *pi, const char *title)
 /*-------------------------------------------------------------------------*/
 {
+  // Headless GWX backend: skip panel creation and allow callers to continue
+  // with offscreen/output-only rendering.
+  if(globGwxImpl)
+  {
+    USE(title);
+    if(pi && *pi==-1) *pi = 0;
+    return NULL;
+  }
 
   int i,rcThis=0,nPnlAux_=globGwx.nPnlAux;
   char chbuf[1000];
@@ -1590,5 +1603,9 @@ PnlPanel *MiGetAuxPanel(int *pi)
 {
   return MiGetAuxPanel2(pi,NULL);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 MSBG_NAMESPACE_END

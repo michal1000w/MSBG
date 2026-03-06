@@ -717,7 +717,7 @@ static void normalize4(pns_grad_t v[4])
 }
 #endif
 
-int PNS_Init3(int rseed)
+int MSBG::PNS_Init3(int rseed)
 {
 #if 0
   UtTimer tm;

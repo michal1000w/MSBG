@@ -21,6 +21,13 @@
 #include "mtool.h"
 #include "rand.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /*=========================================================================
  *
  *
@@ -46,7 +53,7 @@ RND_Generator *defaultGen = &RND_Generator_numc;
 /*-------------------------------------------------------------------------*/
 /* 									   */
 /*-------------------------------------------------------------------------*/
-RND_Generator *RND_GetGenerator( char *name )
+RND_Generator *RND_GetGenerator( const char *name )
 {
   int i,found=FALSE;
   RND_Generator *rndg=NULL;
@@ -744,3 +751,8 @@ rcCatch:
   return rcThis;
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END

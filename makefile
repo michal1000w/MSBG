@@ -77,11 +77,7 @@ CSCOPE = $(MIMP_SOURCE_PATH)/cscope.out
 #
 #
 
-SOURCE = main.cpp msbg_demo.cpp gwx.c mtool.c util.c util2.cpp plot.c rand.c panel.c \
-	 readpng.c sbg.cpp thread.cpp fastmath.cpp blockpool.cpp grid.c \
-	 bitmap.c bitmap2.c pnoise.c pnoise2.cpp pnoise3.cpp halo.cpp msbg.cpp \
-	 msbg2.cpp msbg3.cpp msbg4.cpp visualizeSlices.cpp render.cpp \
-	 msbgaux.cpp mm.c mm2.c 
+SOURCE = demo.cpp
 
 HEADER = MGWin.h VEC3.h bitmap.h blockpool.h common_headers.h fastmath.h globdef.h \
 	grid.h gwx.h halo.h kernels_ispc.h log.h mm.h msbg.h msbg_demo.h msbgcell.h \
@@ -133,24 +129,19 @@ endif
 # 
 # library
 #
-OBJS_MSBG_LIB = gwx.$(OBJE) mtool.$(OBJE) util.$(OBJE) util2.$(OBJE) \
-		 plot.$(OBJE) rand.$(OBJE) panel.$(OBJE) readpng.$(OBJE) sbg.$(OBJE) \
-		 thread.$(OBJE) fastmath.$(OBJE) blockpool.$(OBJE) grid.$(OBJE) bitmap.$(OBJE) bitmap2.$(OBJE) \
-		 pnoise.$(OBJE) pnoise2.$(OBJE) pnoise3.$(OBJE) halo.$(OBJE) msbg.$(OBJE) msbg2.$(OBJE) msbg3.$(OBJE) msbg4.$(OBJE) \
-		 visualizeSlices.$(OBJE) render.$(OBJE) msbgaux.$(OBJE) \
-		 mm.$(OBJE) mm2.$(OBJE) 
+OBJS_MSBG_LIB =
 
-$(STATIC_LIB): $(OBJS_MSBG_LIB)
-	ar rcs $@ $^
+$(STATIC_LIB):
+	@echo "MSBG is header-only. No static library build is required."
 
-$(SHARED_LIB): $(OBJS_MSBG_LIB)
-	$(CXX) -shared -o $@ $^
+$(SHARED_LIB):
+	@echo "MSBG is header-only. No shared library build is required."
 
 # 
 # msbg_demo
 #
 
-OBJS_MSBG_DEMO = main.$(OBJE) msbg_demo.$(OBJE) 
+OBJS_MSBG_DEMO = demo.$(OBJE) 
 
 LD_LIBS_FOR_MSBG_DEMO = \
 	    -lpng \
@@ -161,10 +152,9 @@ LD_LIBS_FOR_MSBG_DEMO = \
 
 ifdef MIMP_ON_LINUX
 
-msbg_demo$(EXE): $(OBJS_MSBG_DEMO) $(STATIC_LIB)
+msbg_demo$(EXE): $(OBJS_MSBG_DEMO)
 	$(LD) $(LDFLAGS) -o $@ \
 	  $(OBJS_MSBG_DEMO) \
-	  -L. -l$(LIBNAME) \
 	  $(LD_LIBS_FOR_MSBG_DEMO) \
 		$(LDFLAGS_BW) \
 		$(LDFLAGS_PROF) \
@@ -174,11 +164,10 @@ else
 # 
 # native windows application via MSYS2/MinGw64
 #
-msbg_demo$(EXE): $(OBJS_MSBG_DEMO) $(STATIC_LIB)
+msbg_demo$(EXE): $(OBJS_MSBG_DEMO)
 	$(LD) $(LDFLAGS) -o $@ \
 	  -static-libgcc -static-libstdc++ \
 	  $(OBJS_MSBG_DEMO) \
-	  -L. -l$(LIBNAME) \
 	  $(LD_LIBS_FOR_MSBG_DEMO) \
 	  $(LDFLAGS_BW) \
 	  $(LDFLAGS_PROF) \
@@ -237,7 +226,7 @@ asm_mark: all
 #
 
 depend_test:
-	$(CC) $(CPPFLAGS) -std=gnu++17 -MG -MM $(MIMP_SOURCE_PATH)/msbgaux.cpp
+	$(CC) $(CPPFLAGS) -std=gnu++17 -MG -MM $(MIMP_SOURCE_PATH)/msbgaux_impl.hpp
 
 depend: gtags_make
 	rm -f $(MIMP_SOURCE_PATH)/dependencies.mk

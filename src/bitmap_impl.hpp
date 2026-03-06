@@ -24,6 +24,11 @@
 
 MSBG_NAMESPACE_BEGIN
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 //#define BMP_WITH_GRWIN
 
 #define BMP_FORMAT_ID_U48 	"U480"
@@ -589,7 +594,7 @@ BmpRegionInfo *MiCreateRegionInfo( int regionSize,
 
   sz = sizeof(BmpRegionInfo);
 
-  padm  = MM_malloc(sz,MM_DUMMYTAG);
+  padm  = (BmpRegionInfo *)MM_malloc(sz,MM_DUMMYTAG);
   if(!padm)
   {
     TRCERR(("MM_malloc(%ld) failed\n",(long)sz));
@@ -639,7 +644,7 @@ rcCatch:
   s = r/2;
   sz = sizeof(BmpRegionMask) + sizeof(unsigned char)*r*r;
 
-  padm  = MM_malloc(sz,MM_DUMMYTAG);
+  padm  = (BmpRegionMask *)MM_malloc(sz,MM_DUMMYTAG);
   if(!padm)
   {
     TRCERR(("MM_malloc(%ld) failed\n",(long)sz));
@@ -745,7 +750,7 @@ BmpPolygon *BmpCreatePolygon( int nVert, int *vertices )
 
   sz = sizeof(BmpPolygon) + sizeof(int)*nVert*2;
 
-  poly  = MM_malloc(sz,MM_DUMMYTAG);
+  poly  = (BmpPolygon *)MM_malloc(sz,MM_DUMMYTAG);
   if(!poly)
   {
     TRCERR(("MM_malloc(%ld) failed\n",(long)sz));
@@ -1412,7 +1417,7 @@ int BmpSuffixToFormat( char *suff )
 /*-------------------------------------------------------------------------*/
 /* 									   */
 /*-------------------------------------------------------------------------*/
-char *BmpFormatToSuffix( int format )
+const char *BmpFormatToSuffix( int format )
 {
   switch(format)
   {
@@ -1892,7 +1897,7 @@ BmpBitmap *BmpCreateBitmap2( char *inFileName, BmpBitmap *bmpSource,
 {
   unsigned options2,channelOpt;
   int sx,sy,rcThis = 0;
-  char	*pname=NULL;
+  const char *pname=NULL;
   FILE	*inFile=NULL;
   BmpBitmap *bmp = NULL;
 
@@ -2028,7 +2033,7 @@ int BmpCreateGreyscaleBitmap( BmpBitmap *bmp )
   if(!bmp->dataGrey)
   {
     bmp->dataGrey = 
-      MM_malloc( (bmp->sx*bmp->sy+1)*sizeof(BmpGreylevel),
+      (BmpGreylevel *)MM_malloc( (bmp->sx*bmp->sy+1)*sizeof(BmpGreylevel),
 	  MM_DUMMYTAG );  
     if(!bmp->dataGrey ) raiseRc( MI_ENOMEM );
     /* set end-marker for fast loop access */	
@@ -4480,7 +4485,6 @@ BmpUV globTmpUV;
 static BmpUV MwfCb_SmoothUV( int boff, int bmod, BmpUV *bdata, 
     			          void *pinfo  )
 {
-  int rcThis=0;
   register int x,y;
   register BmpUV *pp;
   MwfCb_Smooth_Info *info = (MwfCb_Smooth_Info *)pinfo;
@@ -5320,8 +5324,8 @@ int DFT(int dir,int m,double *x1,double *y1)
    double cosarg,sinarg;
    double *x2=NULL,*y2=NULL;
 
-   x2 = MM_malloc(m*sizeof(double),MM_DUMMYTAG);
-   y2 = MM_malloc(m*sizeof(double),MM_DUMMYTAG);
+   x2 = (double *)MM_malloc(m*sizeof(double),MM_DUMMYTAG);
+   y2 = (double *)MM_malloc(m*sizeof(double),MM_DUMMYTAG);
    if (x2 == NULL || y2 == NULL)
       return(FALSE);
 
@@ -5776,7 +5780,7 @@ int BmpCloseSamplingInfo(BmpSamplingInfo *si)
 MtTab *BmpSampleBitmapOld( BmpBitmap *bmp, int nmax,
     		     	unsigned opt )
 {
-  int rcThis=0,x,y,k,i,j,dim;
+  int x,y,k,i,j,dim;
   MtTab *smp=NULL;
   float *vf,vLuv[3];
   BmpSamplingInfo si;
@@ -5832,7 +5836,7 @@ MtTab *BmpSampleBitmap( BmpBitmap *bmp, int nmax, float sd,
     			CoConverter *cc,
     		     	unsigned opt )
 {
-  int rcThis=0,x,y,k,i,j,dim;
+  int x,y,k,i,j,dim;
   MtTab *smp=NULL;
   float *vf,vLuv[3],vRgb[3];
   BmpSamplingInfo si;
@@ -8488,5 +8492,9 @@ int BmpNormalizeChannel( BmpBitmap *I, int chan, int ichan )
 rcCatch:
   return rcThis;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 MSBG_NAMESPACE_END

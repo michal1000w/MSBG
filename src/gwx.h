@@ -11,6 +11,13 @@
 #ifndef GWX_H
 #define GWX_H
 
+#ifndef MSBG_NAMESPACE_BEGIN
+#define MSBG_NAMESPACE_BEGIN
+#define MSBG_NAMESPACE_END
+#endif
+
+MSBG_NAMESPACE_BEGIN
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -67,5 +74,6 @@ int GWXsetmsg(char *TXT, int l);
 }
 #endif
 
-#endif /* GWX_H */
+MSBG_NAMESPACE_END
 
+#endif /* GWX_H */

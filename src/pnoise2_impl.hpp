@@ -158,10 +158,10 @@ void genFractalScalarField(
 
 #ifdef USE_RAN1
 #if 0  // Choose between Mersenne Twister and SFMT generator
-  #include "randomc/mersenne.cpp"
+  #include "randomc/mersenne.hpp"
   #define  STOC_BASE CRandomMersenne     // define random number generator base class
 #else
-  #include "randomc/sfmt.cpp"
+  #include "randomc/sfmt.hpp"
   #define  STOC_BASE CRandomSFMT
 #endif
 #endif
@@ -977,7 +977,9 @@ float noise3_v4(
 
 }; // namespace simdtst
 
-float PNS_simdtst_noise3_v4( double *pos )
+} // namespace PNS
+
+float MSBG::PNS_simdtst_noise3_v4( double *pos )
 {
   Vec4d p(pos[0],pos[1],pos[2],0);
 //  Vec4f p(pos[0],pos[1],pos[2],0);
@@ -994,13 +996,16 @@ float PNS_simdtst_noise3_v4( double *pos )
 #endif
 }
 
-float PNS_donw_noise3d( double *p )
+float MSBG::PNS_donw_noise3d( double *p )
 {
   __m128d p_xy=_mm_set_pd(p[0],p[1]),
 	      p_z=_mm_set_pd(0,p[2]);
-  float f=simdtst::grad_noise3d(p_xy,p_z);
+  float f=PNS::simdtst::grad_noise3d(p_xy,p_z);
   return f;
 }
+
+namespace PNS
+{
 
 namespace simd
 {
@@ -1442,7 +1447,9 @@ Vec8f noise3d_simd8(
 
 } // namespace simd
 
-void PNS_noise3d_simd4_f( const float *px, const float *py, const float *pz, int n,
+} // namespace PNS
+
+void MSBG::PNS_noise3d_simd4_f( const float *px, const float *py, const float *pz, int n,
     			float *result )
 {
 #if 0
@@ -1454,11 +1461,11 @@ void PNS_noise3d_simd4_f( const float *px, const float *py, const float *pz, int
 #else
   Vec4f x(px[0]),y(py[0]),z(pz[0]);
 #endif
-  Vec4f f = simd::noise3d_simd4f( x,y,z );
+  Vec4f f = PNS::simd::noise3d_simd4f( x,y,z );
   f.store(result);
 }
 
-void PNS_noise3d_simd8( const double *px, const double *py, const double *pz, int n,
+void MSBG::PNS_noise3d_simd8( const double *px, const double *py, const double *pz, int n,
     			float *result )
 {
 #if 0
@@ -1474,15 +1481,13 @@ void PNS_noise3d_simd8( const double *px, const double *py, const double *pz, in
   Vec4d zl(pz[0]),zh(pz[0]);
 
 #endif
-  Vec8f f = simd::noise3d_simd8( xl, xh,
+  Vec8f f = PNS::simd::noise3d_simd8( xl, xh,
       		 	   	 yl, yh,
 				 zl, zh );
   f.store(result);
 }
 
-}; // namespace PNS
-
-int PNS_Init2(int rseed)
+int MSBG::PNS_Init2(int rseed)
 {
    TRC(("PNS_Init2(%d)\n",rseed));
    PNS::VVN::init(rseed);

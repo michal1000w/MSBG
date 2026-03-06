@@ -28,6 +28,13 @@
 
 #include "util.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 char	mm_glob_heap_dummy_tag[100];
 
 
@@ -89,7 +96,7 @@ char *MM_libc_aligned_strdup(const char *s)
 {
   if (s == NULL) return NULL;
   size_t szNeeded = strlen(s) + 1;
-  char *copy = MM_libc_aligned_malloc(szNeeded);
+  char *copy = (char *)MM_libc_aligned_malloc(szNeeded);
   if (copy == NULL) return NULL;
   memcpy(copy, s, szNeeded);
   return copy;
@@ -132,3 +139,8 @@ char *MM_Str2UserId( const char *str,
   return uid;
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END

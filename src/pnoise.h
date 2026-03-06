@@ -11,6 +11,11 @@
 #ifndef PNS_H
 #define PNS_H
 
+#ifndef MSBG_NAMESPACE_BEGIN
+#define MSBG_NAMESPACE_BEGIN
+#define MSBG_NAMESPACE_END
+#endif
+
 #define PNS_DOUBLE_PREC
 
 #ifdef __cplusplus
@@ -113,6 +118,8 @@ Vec4f fractal_simd4_i(
 }
 }
 #endif
+
+MSBG_NAMESPACE_BEGIN
 
 #ifdef __cplusplus
 extern "C" {
@@ -244,6 +251,8 @@ double PNS_Fractal_SIMD_f(double *pos, int dim,  // position, dimension
 #ifdef __cplusplus
 }  // extern "C"
 #endif
+
+MSBG_NAMESPACE_END
 
 #endif /* PNS_H */
 

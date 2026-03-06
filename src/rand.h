@@ -10,11 +10,15 @@
 
 #ifndef RAND_H
 #define RAND_H
+
+#include "globdef.h"
 /*=========================================================================
  *
  * 	P R N G	(Pseudo Random Number Generator)
  *
  * =======================================================================*/
+MSBG_NAMESPACE_BEGIN
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -71,7 +75,7 @@ typedef struct
 }
 RND_MultNormLECState;
 
-RND_Generator *RND_GetGenerator( char *name );
+RND_Generator *RND_GetGenerator( const char *name );
 
 int 	RND_Seed_numc( RND_State *rnds, int seed );
 double 	RND_Get_numc( RND_State *rnds );
@@ -170,5 +174,6 @@ int RND_DelMultNormLECState( RND_MultNormLECState *s );
 }
 #endif
 
-#endif /* RAND_H */
+MSBG_NAMESPACE_END
 
+#endif /* RAND_H */

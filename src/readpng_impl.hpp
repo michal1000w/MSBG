@@ -38,6 +38,13 @@
 #include "util.h"
 #include "bitmap.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #if defined(MSBG_WITH_PNG)
 
 typedef int            BOOL_;
@@ -116,7 +123,7 @@ static BOOL_ myimage_alloc(MYIMAGE *img)
 
   if (img->palnum > 0) 
   {
-    img->palette = MM_malloc((size_t)img->palnum * sizeof(PALETTE),MM_DUMMYTAG);
+    img->palette = (PALETTE *)MM_malloc((size_t)img->palnum * sizeof(PALETTE),MM_DUMMYTAG);
     if (img->palette == NULL) { myimage_init(img); return FALSE; }
   } 
   else 
@@ -126,8 +133,8 @@ static BOOL_ myimage_alloc(MYIMAGE *img)
   
   img->rowbytes = ((DWORD_)img->width * img->pixdepth + 31) / 32 * 4;
   img->imgbytes = img->rowbytes * (LongInt)img->height;
-  img->rowptr   = MM_malloc((size_t)img->height * sizeof(unsigned char *),MM_DUMMYTAG);
-  img->bmpbits  = MM_malloc((size_t)img->imgbytes,MM_DUMMYTAG);
+  img->rowptr   = (unsigned char **)MM_malloc((size_t)img->height * sizeof(unsigned char *),MM_DUMMYTAG);
+  img->bmpbits  = (unsigned char *)MM_malloc((size_t)img->imgbytes,MM_DUMMYTAG);
 
   if (img->rowptr == NULL || img->bmpbits == NULL) 
   {
@@ -511,4 +518,10 @@ int BmpWritePNG(FILE *fp, BmpBitmap *bmp, CoConverter *cc, unsigned opt)
 }
 
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END
 

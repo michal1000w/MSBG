@@ -11,6 +11,11 @@
 #ifndef GRID_H
 #define GRID_H
 
+#ifndef MSBG_NAMESPACE_BEGIN
+#define MSBG_NAMESPACE_BEGIN
+#define MSBG_NAMESPACE_END
+#endif
+
 #ifdef __cplusplus
 #include <vectorclass/vectorclass.h>
 #endif
@@ -45,6 +50,8 @@
 
 #define G3D_MAX_PYRA_LEVEL 24
 #define G3D_MAX_FCHAN	32
+
+MSBG_NAMESPACE_BEGIN
 
 #ifdef __cplusplus
 extern "C" {
@@ -470,5 +477,6 @@ double G3D_GetGaussianKernel(
 		);
 #endif
 
-#endif /* GRID_H */
+MSBG_NAMESPACE_END
 
+#endif /* GRID_H */

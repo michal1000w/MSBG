@@ -550,6 +550,40 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 
 #endif 
 
+#if defined(__cplusplus) && defined(MSBG_HEADER_ONLY)
+#undef UT_ASSERT
+#undef UT_ASSERT_NR
+#undef UT_ASSERT_FATAL
+#undef UT_ASSERT0
+
+#define UT_ASSERT(exp) \
+{ \
+  if(unlikely(!(exp))) \
+  { \
+    TRCERR(("Assertion failed.\n")); \
+  } \
+}
+
+#define UT_ASSERT_FATAL(exp) \
+{ \
+  if(unlikely(!(exp))) \
+  { \
+    TRCERR(("Assertion failed (fatal) -> Exit\n")); \
+    exit(1); \
+  } \
+}
+
+#define UT_ASSERT_NR(exp) \
+{ \
+  if(unlikely(!(exp))) \
+  { \
+    TRCERR(("Assertion failed.\n")); \
+  } \
+}
+
+#define UT_ASSERT0(exp) UT_ASSERT_FATAL(exp)
+#endif
+
 //
 // UT_ASSERT2 (level 2; extended checks)
 //
@@ -703,7 +737,7 @@ UtProgrInd;
     rcGw = GWkybrd(&gwich, &gwncnt, &gwiflg, 0); \
     if(rcGw==220 /*GWK_ROOF*/) \
     { \
-      if( GWmsgboxl("sure to abort operation ?") == 1) \
+      if( GWmsgboxl((char*)"sure to abort operation ?") == 1) \
       { \
 	TRC1(("*** WARNING: operation aborted by user !\n")); \
 	  raiseRc( rc_ ); \
@@ -717,7 +751,7 @@ UtProgrInd;
     rcGw = GWkybrd(&gwich, &gwncnt, &gwiflg, 0); \
     if(rcGw==GWK_ROOF) \
     { \
-      if( GWmsgboxl("sure to abort operation ?") == 1) \
+      if( GWmsgboxl((char*)"sure to abort operation ?") == 1) \
       { \
 	TRC1(("*** WARNING: operation aborted by user !\n")); \
 	  goto lab_; \
@@ -1051,7 +1085,7 @@ int UtGetTextLine( FILE *fi, char *line, size_t maxLineLen, unsigned opt,
 char *UtGetNextLineFromString( char **textBegin, char *textEnd );
 char *UtSetFilenameSuffix( char *fnameCompl, 
     			    char *fname, 
-			    char *suffix );
+			    const char *suffix );
 int UtCheckFileExists( char *path );
 char *UtFileSuffix( char *fname );
 char *MiTranspathCyg2Win( char *fname );

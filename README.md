@@ -44,7 +44,7 @@ already included for convenience. The MSBG library compiles on Linux as well as 
 
 ## Limitations
 
-At this stage, the MSBG library is still in an experimental phase (research code). Some features may be insufficiently tested and lack comprehensive documentation. It is recommended to refer to msbg_demo.cpp for usage examples of the library.
+At this stage, the MSBG library is still in an experimental phase (research code). Some features may be insufficiently tested and lack comprehensive documentation. It is recommended to refer to demo.cpp for usage examples of the header-only setup.
 
 ---
 
@@ -54,10 +54,20 @@ At this stage, the MSBG library is still in an experimental phase (research code
 git clone https://github.com/your-org/MSBG.git
 cd MSBG
 
-mkdir build && cd build
+./compile.sh --demo --clean   # builds build/msbg_demo
+./build/msbg_demo -h          # show options
+```
 
-# simple Make-based build provided for convenience
-../mk               # builds the library and 'msbg_demo' executable
-msbg_demo -h        # Show options
+`--lib` is intentionally a no-op because MSBG is now header-only.
 
+## Header-only usage
 
+Include a single umbrella header in your translation unit:
+
+```cpp
+#include "src/msbg_header_only.hpp"
+```
+
+This project keeps only one `.cpp` source file for build/demo purposes:
+
+- `src/demo.cpp` (includes `msbg_header_only.hpp` and demo implementation headers)

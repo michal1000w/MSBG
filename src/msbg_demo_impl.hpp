@@ -127,8 +127,9 @@ float camPos[3] = {.5f,.8f,.7f},
 int camRes[2] = {3840,2160};
 
 static void render_scene( int testCase, MSBG::MultiresSparseGrid *msbg, int chan, 
-     			  PnlPanel *pnl )
+     			  PnlPanel *pnl, const char *sceneTitle )
 {
+  USE(testCase);
   SBG::SparseGrid<uint16_t> *sg = msbg->getUint16Channel(chan,0);
 
   UtTimer tm;
@@ -174,10 +175,15 @@ static void render_scene( int testCase, MSBG::MultiresSparseGrid *msbg, int chan
     (double)TIMER_DIFF_MS(&tm)/1000.,
     ((double)sx*sy)/(double)(TIMER_DIFF_MS(&tm)/1000.0)));	
 
-  PnlShowBitmap2( pnl, B );  
+  if(pnl)
+  {
+    PnlShowBitmap2( pnl, B );
+    pnl->totalTime = 0;
+  }
 
-  pnl->totalTime = 0;
-  msbg->saveVisualizationBitmap( B, pnl->title );
+  const char *visTitle = (sceneTitle && sceneTitle[0]) ? sceneTitle : "scene";
+  if(pnl && pnl->title[0]) visTitle = pnl->title;
+  msbg->saveVisualizationBitmap( B, (char*)visTitle );
 
   TRCP(("Output images saved to '%s/'.\n",VIS_OUTPUT_DIR));
   
@@ -698,7 +704,9 @@ int msbg_test_sparse(int testCase, const char *basePointsFile,
   #if 0
   {
     static int pnl = -1;
-    render_scene( testCase, msbg, chan, MiGetAuxPanel2(&pnl,"scene_after_particle_splatting") ); 
+    render_scene( testCase, msbg, chan,
+		  MiGetAuxPanel2(&pnl,"scene_after_particle_splatting"),
+		  "scene_after_particle_splatting" );
   }
   #endif
 
@@ -749,7 +757,8 @@ int msbg_test_sparse(int testCase, const char *basePointsFile,
   {
     static int pnl = -1;
     render_scene( testCase, msbg, chan, 
-		  MiGetAuxPanel2(&pnl,"scene_after_PDE_smoothing") ); 
+		  MiGetAuxPanel2(&pnl,"scene_after_PDE_smoothing"),
+		  "scene_after_PDE_smoothing" );
   }
 
   /////////////////////////////////////////////////////////////////////////////////

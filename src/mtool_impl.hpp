@@ -21,6 +21,13 @@
 #include "rand.h"
 #include "plot.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define  DDC_PI  (3.14159265358979323846)
 #define  ONEBYPI ((double) 0.3183098861837906715377675)
 
@@ -1514,9 +1521,9 @@ MtVector MtVecGenChaos( MtVector y, int n, MtReal parm1,
 /********************************************************************/			 
 MtRQueue *MtRQueueOpen( int max )
 {
-  MtRQueue *q = MM_malloc( sizeof ( MtRQueue ), MM_DUMMYTAG );
+  MtRQueue *q = (MtRQueue *)MM_malloc( sizeof ( MtRQueue ), MM_DUMMYTAG );
   if( !q ) goto fail;
-  q->buffer = MM_malloc( sizeof( MtReal ) * max, MM_DUMMYTAG );
+  q->buffer = (MtReal *)MM_malloc( sizeof( MtReal ) * max, MM_DUMMYTAG );
   if( !q->buffer ) goto fail;   
   q->max = max;
   MtRQueueInit( q );
@@ -1561,7 +1568,7 @@ void MtRQueueInit( MtRQueue *q )
 
 MtVector MtVecOpen( int n )
 {
-  MtVector v = MM_malloc( n * sizeof( MtReal ), MM_DUMMYTAG );
+  MtVector v = (MtVector)MM_malloc( n * sizeof( MtReal ), MM_DUMMYTAG );
   if( ! v )
   {
     printf("MtVecOpen(): MM_malloc(%ld) failed.\n",
@@ -1582,7 +1589,7 @@ MtVector MtVecOpen( int n )
 /********************************************************************/			 
 MtVector MtMatOpen( int n, int m )
 {
-  MtMatrix mat = MM_malloc( n * m * sizeof( MtReal ), MM_DUMMYTAG );
+  MtMatrix mat = (MtMatrix)MM_malloc( n * m * sizeof( MtReal ), MM_DUMMYTAG );
   if( ! mat )
   {
     printf("MtMatOpen(): MM_malloc() failed.\n"); 
@@ -2005,7 +2012,7 @@ void MtMatPrint_d( double *a, int n, int m, char *fformat )
 *********************************************************************/
 {
   int i,j;
-  char *fformatAct=fformat ? fformat : "%9.5f "; 
+  const char *fformatAct=fformat ? fformat : "%9.5f "; 
   for(i=0;i<n;i++)
   {
     for(j=0;j<m;j++)
@@ -2066,7 +2073,6 @@ double MtNormDstInv( double y )
 //-----------------------------------------------------------------------------
 //
   
-    int rcThis=0;
     double  r, s,x=0;
     if( y < 0.02425 )
     {
@@ -2571,7 +2577,6 @@ MtMat *MtCreateMat( LongInt nRow, LongInt nCol )
 /********************************************************************/
 MtMat *MtCopyMat( MtMat *dst, MtMat *src )
 {
-  int rcThis=0;
   UT_ASSERT(src->nCol==dst->nCol&&src->nRow==dst->nRow);
   memcpy(dst->data,src->data,
          sizeof(dst->data[0])*src->nRow*src->nCol);
@@ -3007,7 +3012,7 @@ int MtMultStatPrint2( int dim, int nSmp, double *vMean,
 			char *fformat )
 {
   int i,j,k;
-  char *fformatAct=fformat ? fformat : "%11.6g "; 
+  const char *fformatAct=fformat ? fformat : "%11.6g "; 
   // TODO: auto detect format string from data
   double r;
   printf("dimensions=%d, samples=%d\n",dim,nSmp);
@@ -4139,7 +4144,7 @@ void MtDstGetStat2( MtDst *dst, double *median,
     		    double *skew, double *curt,
 		    double *energy, double *entropy )
 {
-  int 	i, n=dst->nSmp,me,rcThis=0;
+  int 	i, n=dst->nSmp,me;
   float	*x=dst->vDist;
   double f,y,yOld=0,xAvg = dst->stat.avg;
   register double a,b,s2,s3,s4,c,w;
@@ -4405,7 +4410,7 @@ int MtMultipleCorrelationTest( int n, int m, MtReal noise,
     /* printf(" %6g \n",y[i]);  */
   } 
   
-  pvx = MM_malloc( m * sizeof( MtVector *), MM_DUMMYTAG);
+  pvx = (MtVector *)MM_malloc( m * sizeof( MtVector *), MM_DUMMYTAG);
   for(i=0;i<m;i++) pvx[i] = &MT_MATEL(x,n,i,0);
    
   MtMultipleCorrelation( pvx, y, n, m, b, &rss, &r, t );
@@ -4735,7 +4740,7 @@ int MtNLRegOpen( int nSmp, MtNLRegHandle *handle )
   int    rc;
   struct MtNLRegAdm *adm=NULL;
   
-  adm = MM_malloc( sizeof (struct MtNLRegAdm), MM_DUMMYTAG );
+  adm = (struct MtNLRegAdm *)MM_malloc( sizeof (struct MtNLRegAdm), MM_DUMMYTAG );
   if(!adm) 
   {
     rc = MT_ENOMEM;
@@ -4798,7 +4803,7 @@ Parameters:
 
   x2 = MtVecOpen( adm->m );
   vDistance = MtVecOpen( adm->n );
-  neighbors = MM_malloc( adm->n * sizeof( MtNLRegNeighbor ), MM_DUMMYTAG );
+  neighbors = (MtNLRegNeighbor *)MM_malloc( adm->n * sizeof( MtNLRegNeighbor ), MM_DUMMYTAG );
   if( ! neighbors )
   {
     printf("MtNLRegForecast: MM_malloc() failed.\n");   
@@ -5391,11 +5396,13 @@ double MtFactorialOdd( double n )
 #include <mathc.h>
 #endif
 
+#ifndef __cplusplus
 extern double sqrt (double);
 extern double pow (double, double);
 extern double cos (double);
 extern double acos (double);
 double fabs (double);
+#endif
 
 int MtSolveCubic(double *, double *);
 
@@ -6560,7 +6567,7 @@ void svdcmp(float **a, int m, int n, float *w, float **v)
   int i,j,k;
 
   float g,scale,anorm;  
-  float *rv1=MM_malloc(sizeof(float)*n)-1;
+  float *rv1=(float *)MM_malloc(sizeof(float)*n,MM_DUMMYTAG)-1;
   g=scale=anorm=0.0;
   for(i=1;i<=n;++i){
     int l=i+1;
@@ -8861,3 +8868,8 @@ cmplx cmplx_pow(cmplx a, cmplx b)
 	return(r);
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END

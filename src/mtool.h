@@ -827,11 +827,31 @@ MtRQueue;
 /*-------------------------------------------------------------------------*/
 /* 									   */
 /*-------------------------------------------------------------------------*/
+#ifdef __cplusplus
+inline MtReal *MtVecCopy_f_ret( MtReal *y, const MtReal *x, int n )
+{
+  memcpy( y, x, (size_t)n * sizeof( MtReal ) );
+  return y;
+}
+
+inline double *MtVecCopy_d_ret( double *y, const double *x, int n )
+{
+  memcpy( y, x, (size_t)n * sizeof( double ) );
+  return y;
+}
+
+#define MtVecCopy_f( y_, x_, n_ ) \
+  MtVecCopy_f_ret( (y_), (x_), (n_) )
+
+#define MtVecCopy_d( y_, x_, n_ ) \
+  MtVecCopy_d_ret( (y_), (x_), (n_) )
+#else
 #define MtVecCopy_f( y_, x_, n_ ) \
   memcpy( y_, x_, (n_) * sizeof( MtReal ) )
 
 #define MtVecCopy_d( y_, x_, n_ ) \
   memcpy( y_, x_, (n_) * sizeof( double ) )
+#endif
 
 #define MtVecDbl2Flt( y_, x_, n_ ) \
 { \
@@ -1550,4 +1570,3 @@ cmplx cmplx_pow(cmplx a, cmplx b);
 MSBG_NAMESPACE_END
 
 #endif
-

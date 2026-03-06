@@ -124,6 +124,70 @@ extern char mm_glob_heap_dummy_tag[];
 #define ALLOCOBJS( objPtr_, nObj_ ) \
   ALLOCARR( objPtr_, nObj_ )
 
+#else
+
+#define ALLOCMEM_TAG( newptr_, size_,tag_) \
+{ \
+  TRCALLOC(size_); \
+  char tag[64];\
+  if(!(tag_))\
+  {\
+    MM_MK_UID(tag);\
+  }\
+  newptr_ = (__typeof__(newptr_))MM_malloc(size_,(tag_)?(tag_):tag); \
+  if(!(newptr_)) \
+  { \
+    TRCERR(("out of virtual memory: MM_malloc(%.0f) failed -> exit.\n", \
+	  (double)(size_))); \
+    exit(1); \
+  } \
+}
+
+#define ALLOCMEM( newptr_, size_) ALLOCMEM_TAG(newptr_,size_,NULL)
+
+#define ALLOCARR( objPtr_, nObj_) \
+  ALLOCMEM( objPtr_, (nObj_)*sizeof(*(objPtr_)))
+
+#define ALLOCARR0_TAG( objPtr_, nObj_,tag_) \
+{ \
+  char tag[64];\
+  if(!(tag_))\
+  {\
+    MM_MK_UID(tag);\
+  }\
+  TRCALLOC(sizeof(*(objPtr_))*(size_t)(nObj_)); \
+  objPtr_ = (__typeof__(objPtr_))MM_calloc( nObj_, sizeof(*(objPtr_)),(tag_)?(tag_):tag); \
+  if(!(objPtr_)) \
+  { \
+    TRCERR(( \
+	  "out of virtual memory: MM_calloc(%ld,%lu) failed -> exit.\n", \
+	  (unsigned long)nObj_,(unsigned long)(sizeof(*(objPtr_))))); \
+    exit(1); \
+  } \
+}
+
+#define ALLOCARR0( objPtr_, nObj_) ALLOCARR0_TAG(objPtr_,nObj_,NULL)
+#define ALLOCOBJ0(objPtr_) ALLOCARR0(objPtr_,1)
+#define ALLOCOBJ0_TAG(objPtr_,tag_) ALLOCARR0_TAG(objPtr_,1,tag_)
+
+#define RALLOCMEM( newptr_, ptr_, size_) \
+{ \
+  char tag[64];\
+  MM_MK_UID(tag);\
+  newptr_ = (__typeof__(newptr_))MM_realloc( ptr_, size_, tag); \
+  if(!(newptr_)) \
+  { \
+    TRCERR(("out of virtual memory: MM_realloc(%lu) failed -> exit.\n", \
+	  (unsigned long)(size_))); \
+    exit(1); \
+  } \
+}
+#define RALLOCARR( objPtr_, nObj_ ) \
+  RALLOCMEM( objPtr_, objPtr_, (nObj_)*sizeof(*(objPtr_)))
+
+#define ALLOCOBJ( objPtr_ ) ALLOCARR( objPtr_, 1 )
+#define ALLOCOBJS( objPtr_, nObj_ ) ALLOCARR( objPtr_, nObj_ )
+
 #endif /* !__cplusplus */
 
 #define ALLOCMEM_TAG_( newptr_, type_, size_, tag_) \
@@ -338,4 +402,3 @@ void* operator new[](size_t size, const char* file, int line);
 
 
 #endif /* MM_H */
-

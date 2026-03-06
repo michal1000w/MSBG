@@ -168,12 +168,21 @@ typedef int LongInt;
 #define ONE_MB (1024*ONE_KB)
 #define ONE_GB (((LongInt)1024)*ONE_MB)
 
+#ifdef __cplusplus
+#define SWAP_PTR( p1, p2 ) \
+{ \
+  __typeof__(p1) tmp__ = p1; \
+  p1 = p2; \
+  p2 = tmp__; \
+}
+#else
 #define SWAP_PTR( p1, p2 ) \
 { \
   void *tmp__ = p1; \
   p1 = p2; \
   p2 = tmp__; \
 }
+#endif
 
 #define SWAP_PTR_( type_, p1, p2 ) \
 { \

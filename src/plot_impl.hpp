@@ -18,6 +18,13 @@
 #include "mtool.h"
 #include "plot.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 static int roundupTable[10] = { 1, 2, 2, 5, 5, 5, 5, 10, 10, 10 };
   
 /********************************************************************/
@@ -691,3 +698,8 @@ int PlColNib2Byte( int a )
   return b;
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END

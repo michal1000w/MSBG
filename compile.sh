@@ -8,10 +8,10 @@ usage() {
   cat <<'USAGE'
 Usage: ./compile.sh [options]
 
-Build targets (default is static library):
-  --lib             Build libmsbg.a (default)
-  --demo            Build msbg_demo executable
-  --all             Build default make target (library + demo)
+Build targets (default is demo executable):
+  --lib             No-op (header-only library; no library artifact is built)
+  --demo            Build msbg_demo executable (default)
+  --all             Build default make target
 
 General options:
   --debug           Build with debug flags
@@ -61,7 +61,7 @@ join_by_space() {
   echo "$*"
 }
 
-BUILD_MODE="lib"
+BUILD_MODE="demo"
 BUILD_TYPE="release"
 BUILD_DIR="build"
 TARGET_ARCH_INPUT="native"
@@ -133,6 +133,12 @@ while [[ $# -gt 0 ]]; do
   esac
   shift
 done
+
+# Header-only library mode does not require any architecture/toolchain probing.
+if [[ "$BUILD_MODE" == "lib" ]]; then
+  echo "[msbg] header-only mode: no libmsbg.a build is required."
+  exit 0
+fi
 
 HOST_OS="$(uname -s)"
 HOST_ARCH="$(normalize_arch "$(uname -m)")"

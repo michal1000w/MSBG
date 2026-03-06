@@ -11,6 +11,8 @@
 #ifndef TRACE_H
 #define TRACE_H
 
+MSBG_NAMESPACE_BEGIN
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,5 +80,6 @@ extern char LogSaveLoc[];
 }
 #endif
 
-#endif /* TRACE_H */
+MSBG_NAMESPACE_END
 
+#endif /* TRACE_H */

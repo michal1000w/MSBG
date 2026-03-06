@@ -32,6 +32,13 @@
 #include "globdef.h"
 #include "util.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /**** trace */
 
 int LogLevel = 1;
@@ -925,6 +932,7 @@ rcCatch:
 int UtGetFileSize( char *fpath, size_t *p_size )
 {
   int rcThis=0,rc,fd=-1;
+  off_t fsize = 0;
   *p_size =0;
   
   fd = open( fpath, O_RDONLY| O_BINARY ,
@@ -935,7 +943,7 @@ int UtGetFileSize( char *fpath, size_t *p_size )
 	  fpath,(int)errno),MI_EIO);
   }
 
-  off_t fsize = lseek(fd, 0, SEEK_END);
+  fsize = lseek(fd, 0, SEEK_END);
   if(fsize<0)
   {
     TRCERRR(("lseek failed for file '%s' errno=%d\n",
@@ -1960,7 +1968,7 @@ char *UtFileSuffix( char *fname )
 /*-------------------------------------------------------------------------*/
 char *UtSetFilenameSuffix( char *fnameCompl, 
     			    char *fname, 
-			    char *suffix )
+			    const char *suffix )
 {
   int i,len=strlen(fname), slen = strlen(suffix);
   
@@ -2402,7 +2410,7 @@ char *UtReadFileToString( char *path )
   fsize = ftell( fp );
   rewind(fp);
 
-  buf = MM_malloc(fsize+1,MM_DUMMYTAG);
+  buf = (char *)MM_malloc(fsize+1,MM_DUMMYTAG);
   if(!buf)
   {
     TRCERRR(("MM_malloc(%ld) failed\n",(long)(fsize+1)),MI_ENOMEM);
@@ -2796,3 +2804,8 @@ UtFSM *UtCreateFSM( size_t maxBlocks, size_t blockSize )
   return fsm;
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END

@@ -22,6 +22,13 @@
 #include "util.h"
 #include "grid.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 //#define DO_ALIGNED_MALLOC
 
 /*-------------------------------------------------------------------------*/
@@ -1579,5 +1586,10 @@ G3D_Grid G3D_CreateGrid0( int sx, int sy, int sz,
   return adm;
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END
 
 

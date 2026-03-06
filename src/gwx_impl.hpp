@@ -20,6 +20,13 @@
 #include "util.h"
 #include "gwx.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define GW_OK 1
 
 int globGwxImpl=1;
@@ -421,3 +428,14 @@ int GWXsetmsg(char *TXT, int l)
   }
 }
 
+#ifdef __cplusplus
+}
+#endif
+
+MSBG_NAMESPACE_END
+
+// MIMP_NOREDEFINE_GWX is needed only while compiling this implementation unit.
+// In header-only single-TU mode it must not leak into following includes.
+#ifdef MIMP_NOREDEFINE_GWX
+#undef MIMP_NOREDEFINE_GWX
+#endif

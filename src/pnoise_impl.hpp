@@ -19,6 +19,12 @@
 #include "mtool.h"
 #include "rand.h"
 
+MSBG_NAMESPACE_BEGIN
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #ifdef PNS_DOUBLE_PREC
 typedef double pns_grad_t;
@@ -596,7 +602,7 @@ int pns_rand(void *rnds)
 #ifdef PNS_RAND_OLD
   return rand();
 #else
-  int i = RND_GetInt(rnds,32768),
+  int i = RND_GetInt((RND_Stream*)rnds,32768),
       j = (uint32_t)(rand()) & (32768-1);
   int k=j*i;
   return k & (32768-1);
@@ -1016,3 +1022,22 @@ double PNS_Fractal_2(
    return(sum);
 }
 
+
+#ifdef __cplusplus
+}
+#endif
+
+#undef _B_
+#undef BM
+#undef N
+#undef NP
+#undef NM
+#undef s_curve
+#undef lerp
+#undef setup
+#undef at2
+#undef at3
+#undef at4
+#undef s_curve2
+
+MSBG_NAMESPACE_END
